@@ -23,6 +23,20 @@
   },
   "plugins": ["react", "@typescript-eslint", "import"],
   "rules": {
+    "import/order": [
+      "error",
+      {
+        "groups": [
+          "builtin",
+          "external",
+          "internal",
+          ["sibling", "parent"],
+          "index"
+        ],
+        "newlines-between": "always"
+      }
+    ],
+
     "react/react-in-jsx-scope": "off",
     "import/no-unresolved": "off",
     "@typescript-eslint/no-unused-vars": [

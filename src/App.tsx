@@ -1,6 +1,10 @@
 import { Suspense } from "react";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
-import { unauthenticatedRoutes } from "./utils/routeComponents";
+import {
+  authenticatedRoutes,
+  unauthenticatedRoutes,
+} from "./utils/routeComponents";
+import AuthLayout from "./Layout/AuthLayout";
 
 function App() {
   return (
@@ -15,6 +19,17 @@ function App() {
             />
           ))}
         </Routes>
+        <AuthLayout>
+          <Routes>
+            {authenticatedRoutes.map((route, index) => (
+              <Route
+                key={index}
+                path={route.path}
+                element={<route.component />}
+              />
+            ))}
+          </Routes>
+        </AuthLayout>
       </Suspense>
     </Router>
   );
