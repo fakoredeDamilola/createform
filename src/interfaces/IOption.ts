@@ -5,4 +5,5 @@ export interface IOption {
   optionText: string;
   optionLabel: OptionLabel | BooleanLabel;
   selectedOption: boolean;
+  correctOption?: boolean;
 }

@@ -6,7 +6,6 @@ import { colors } from "../../styles/colors";
 import { IQuestion } from "../../interfaces/IQuestion";
 import Icon from "../Icon";
 import {
-  deleteQuestion,
   duplicateQuestion,
   selectAQuestion,
 } from "../../store/slices/form.slice";
@@ -15,9 +14,11 @@ import { RootState } from "../../store/store";
 
 const QuestionListItem = ({
   question,
+  deleteQuestionFunc,
 }: {
   question: IQuestion;
   formId: string;
+  deleteQuestionFunc: (questionId: string) => void;
 }) => {
   const dispatch = useDispatch();
   const [showDotsOptions, setShowDotsOptions] = useState(false);
@@ -43,18 +44,12 @@ const QuestionListItem = ({
   };
 
   const duplicateQuestionFunc = () => {
-    console.log({ selectedQuestionId });
     dispatch(duplicateQuestion({ questionId: question.questionId }));
     handleClose();
   };
 
   const selectQuestion = () => {
     dispatch(selectAQuestion({ questionId: question.questionId }));
-  };
-
-  const deleteQuestionFunc = () => {
-    dispatch(deleteQuestion({ questionId: question.questionId }));
-    handleClose();
   };
 
   return (
@@ -139,7 +134,10 @@ const QuestionListItem = ({
           <MenuItem sx={{ fontSize: "14px" }} onClick={duplicateQuestionFunc}>
             Duplicate
           </MenuItem>
-          <MenuItem sx={{ fontSize: "14px" }} onClick={deleteQuestionFunc}>
+          <MenuItem
+            sx={{ fontSize: "14px" }}
+            onClick={() => question?._id && deleteQuestionFunc(question._id)}
+          >
             Delete
           </MenuItem>
         </Menu>

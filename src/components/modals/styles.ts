@@ -17,15 +17,16 @@ const ModalBackdrop = styled.div<{
 `;
 
 // Modal content box
-const ModalContent = styled.div<{ width?: string }>`
+const ModalContent = styled.div<{ width?: string; height?: string }>`
   background: ${colors.white};
   padding: 40px;
+  overflow: scroll;
   border-radius: 20px;
   width: ${({ width }) => width ?? "400px"};
   max-width: 90%;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
   text-align: center;
-  min-height: 75%;
+  min-height: ${({ height }) => height ?? "75%"};
   position: relative;
 `;
 

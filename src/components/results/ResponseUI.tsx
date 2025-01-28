@@ -16,7 +16,6 @@ const ResponseUI = ({
   responses: IAnswer[];
   question: IQuestion;
 }) => {
-  console.log({ responses, question });
   return (
     <Box my="20px">
       {question.questionType === QuestionType.long_text ||

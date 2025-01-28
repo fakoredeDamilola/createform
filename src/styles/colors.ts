@@ -17,6 +17,10 @@ export const colors = {
   questionTabNumber: "rgb(181, 221, 252)",
   selectedOptionBackground: "rgba(4, 69, 175, 0.3)",
   selectedOptionBoxShadow: "rgb(4, 69, 175) 0px 0px 0px 2px inset",
+  selectedCorrectOptionBackground: "rgba(34, 139, 34, 0.3)",
+  selectedCorrectOptionBoxShadow: "rgb(34, 139, 34) 0px 0px 0px 2px inset",
+  selectedWrongOptionBackground: "rgba(220, 20, 60, 0.3)", // Crimson red with 30% opacity
+  selectedWrongOptionBoxShadow: "rgb(220, 20, 60) 0px 0px 0px 2px inset",
   optionBoxShadow: "rgba(4, 69, 175, 0.6) 0px 0px 0px 1px inset",
   bgOption: "rgba(4, 69, 175, 0.1)",
   bgOptionText: "rgb(4, 69, 175)",

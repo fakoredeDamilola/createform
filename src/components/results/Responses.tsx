@@ -19,7 +19,6 @@ const Responses = () => {
   const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.checked) {
       const newSelected = responses.map((n) => n._id);
-      console.log({ newSelected });
       setSelected(newSelected);
       return;
     }

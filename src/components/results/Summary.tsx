@@ -19,7 +19,6 @@ const Summary = ({
             const { question, answers } = content;
             const totalResponse = getTotalResponses(answers);
 
-            console.log({ question, answers, totalResponse });
             return (
               <Stack
                 key={question._id}

@@ -1,12 +1,17 @@
 import { QuestionType } from "../utils/constants";
 import { GrMultiple } from "react-icons/gr";
 import { MdOutlineShortText } from "react-icons/md";
+import { BiSolidSelectMultiple } from "react-icons/bi";
 import { PiTextAlignLeftLight } from "react-icons/pi";
 import { GoNumber } from "react-icons/go";
 import { CiTextAlignJustify } from "react-icons/ci";
 import { AiOutlineMail } from "react-icons/ai";
 import { VscSymbolBoolean } from "react-icons/vsc";
 import { colors } from "../styles/colors";
+import {
+  HiOutlineArrowLeftEndOnRectangle,
+  HiOutlineArrowRightStartOnRectangle,
+} from "react-icons/hi2";
 import { FaRegEyeSlash, FaTags } from "react-icons/fa";
 
 const Icon = ({
@@ -40,6 +45,15 @@ const Icon = ({
           <GrMultiple
             style={{
               backgroundColor: !withBg ? "transparent" : colors.coolGray,
+              ...style,
+            }}
+          />
+        );
+      case QuestionType.multiple_selection:
+        return (
+          <BiSolidSelectMultiple
+            style={{
+              backgroundColor: !withBg ? "transparent" : colors.lightSage,
               ...style,
             }}
           />
@@ -101,6 +115,24 @@ const Icon = ({
       case "Hidden":
         return (
           <FaRegEyeSlash
+            style={{
+              backgroundColor: !withBg ? "transparent" : colors.paleMauve,
+              ...style,
+            }}
+          />
+        );
+      case "start":
+        return (
+          <HiOutlineArrowRightStartOnRectangle
+            style={{
+              backgroundColor: !withBg ? "transparent" : colors.paleMauve,
+              ...style,
+            }}
+          />
+        );
+      case "end":
+        return (
+          <HiOutlineArrowLeftEndOnRectangle
             style={{
               backgroundColor: !withBg ? "transparent" : colors.paleMauve,
               ...style,

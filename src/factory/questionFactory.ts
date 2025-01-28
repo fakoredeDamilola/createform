@@ -1,59 +1,64 @@
-import { IOption } from "../interfaces/IOption";
 import { QuestionType } from "../utils/constants";
+import { BooleanChoice } from "./classes/BooleanChoice";
 import LongText from "./classes/LongText";
 import MultipleChoice from "./classes/MultipleChoice";
+import MultipleSelection from "./classes/MultipleSelection";
+import ShortText from "./classes/ShortText";
 
 export class QuestionFactory {
   static createNewQuestion(
     questionType: QuestionType,
     questionInfo: {
       questionFormat: "Text" | "Video";
-      questionDescription: string;
-      required: boolean;
-      characterLimit: boolean;
       questionNumber: number;
-      questionText: string;
       formId: string;
       questionId: string;
-      options?: IOption[];
     }
   ) {
-    const {
-      questionFormat,
-      questionDescription,
-      questionId,
-      formId,
-      questionNumber,
-      characterLimit,
-      required,
-      questionText,
-      options,
-    } = questionInfo;
+    const { questionFormat, questionId, formId, questionNumber } = questionInfo;
     switch (questionType) {
       case QuestionType.long_text:
         return new LongText(
-          questionFormat,
-          questionDescription,
-          required,
-          characterLimit,
-          questionNumber,
-          questionText,
-          formId,
-          questionType,
-          questionId
-        );
-      case QuestionType.multiple_choice:
-        return new MultipleChoice(
-          questionFormat,
-          questionDescription,
-          required,
-          characterLimit,
-          questionNumber,
-          questionText,
           formId,
           questionType,
           questionId,
-          options ?? []
+          questionFormat,
+          questionNumber
+        );
+      case QuestionType.short_text:
+        return new ShortText(
+          formId,
+          questionType,
+          questionId,
+          questionFormat,
+          questionNumber
+        );
+      case QuestionType.multiple_choice:
+        return new MultipleChoice(
+          formId,
+          questionType,
+          questionId,
+          questionFormat,
+          questionNumber,
+          []
+        );
+      case QuestionType.multiple_selection:
+        return new MultipleSelection(
+          formId,
+          questionType,
+          questionId,
+          questionFormat,
+          questionNumber,
+          []
+        );
+      case QuestionType.boolean:
+        return new BooleanChoice(
+          formId,
+          questionType,
+          questionId,
+          questionFormat,
+          questionNumber,
+          []
         );
     }
   }

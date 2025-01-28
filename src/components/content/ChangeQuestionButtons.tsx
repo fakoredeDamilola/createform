@@ -4,6 +4,7 @@ import { colors } from "../../styles/colors";
 import theme from "../../styles/theme";
 
 interface IChangeQuestionButtons {
+  popQuiz: boolean;
   currentIndex: number;
   changeQuestion: (value: number) => void;
   noOfQuestions: number;
@@ -11,6 +12,7 @@ interface IChangeQuestionButtons {
 }
 
 const ChangeQuestionButtons = ({
+  popQuiz,
   currentIndex,
   changeQuestion,
   noOfQuestions,
@@ -31,7 +33,7 @@ const ChangeQuestionButtons = ({
       justifyContent={isMobile ? "auto" : "flex-end"}
     >
       <Stack
-        display="row"
+        display={popQuiz ? "none" : "flex"}
         justifyContent="center"
         alignItems="center"
         width="50px"
@@ -65,7 +67,7 @@ const ChangeQuestionButtons = ({
       </Stack>
       {isMobile && children}
       <Stack
-        display="row"
+        display={popQuiz ? "none" : "flex"}
         justifyContent="center"
         alignItems="center"
         width="50px"

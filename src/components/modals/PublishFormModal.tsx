@@ -20,7 +20,6 @@ const PublishFormModal: React.FC<PublishFormModalProps> = ({
   const copyTextToClipboard = () => {
     navigator.clipboard.writeText(formURL).then(
       () => {
-        console.log("Text copied to clipboard");
         setCopyText(true);
         setTimeout(() => setCopyText(false), 3000);
       },

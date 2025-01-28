@@ -18,8 +18,8 @@ import { DashboardHeaderTabs } from "../../utils/constants";
 import { setSelectedDashboardTab } from "../../store/slices/user.slice";
 import { useNavigate, useParams } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
-import { updateFormDetails } from "../../api/dashboard.api";
-
+import { updateFormSettingDetails } from "../../api/dashboard.api";
+import { IForm } from "../../interfaces/IForm";
 const DashboardHeader = () => {
   const pathname = window.location.pathname;
   const params = useParams();
@@ -35,14 +35,15 @@ const DashboardHeader = () => {
   const debouncedName = useDebounce(debouncedFormName, 500);
 
   const { mutate } = useMutation({
-    mutationFn: updateFormDetails,
+    mutationFn: (newForm: IForm & { publish: boolean }) =>
+      updateFormSettingDetails(newForm),
     onSuccess: (data) => {
       alert("success");
-      console.log("Item created successfully:", data);
+      // console.log("Item created successfully:", data);
     },
     onError: (error) => {
       alert("error");
-      console.error("Error creating item:", error);
+      // console.error("Error creating item:", error);
     },
   });
 

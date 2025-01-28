@@ -1,4 +1,5 @@
 import { EncryptionType } from "../utils/constants";
+import { IStaticPage } from "./IStaticPage";
 import { IFormInsight } from "./IFormInsight";
 import { IFormSetting } from "./IFormSetting";
 import { IQuestion } from "./IQuestion";
@@ -22,5 +23,9 @@ export interface IForm {
   updatedAt: string;
   publish?: boolean;
   slug: string;
+  encryptionDetails: string[];
+  totalFormTimeLimit?: number;
   formResponseInsights: IFormInsight;
+  formStartPage: IStaticPage;
+  formEndPage: IStaticPage;
 }

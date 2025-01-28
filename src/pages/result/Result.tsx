@@ -24,19 +24,12 @@ const Result = () => {
     (state: RootState) => state.form
   );
 
-  console.log({ form });
   const [selectedTab, setSelectedTab] = useState(0);
 
-  const { data, error, isLoading } = useQuery({
+  const { data, isLoading } = useQuery({
     queryKey: ["getFormById", params.formId],
     queryFn: ({ queryKey }) => getFormById(queryKey[1] as string),
     enabled: !!params.formId,
-  });
-
-  console.log({
-    data,
-    error,
-    isLoading,
   });
 
   useEffect(() => {

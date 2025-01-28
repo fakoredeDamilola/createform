@@ -5,15 +5,16 @@ export const routes = {
   result: "/form/result/:formId",
   createForm: "/form/create/:formId",
   contentForm: "/g/:slug",
+  contentResultPage: "/r/:responseId",
   login: "/login",
   signup: "/signup",
+  resultPage: "/result/:responseId",
 };
 
 export const getRoute = (
   routeProps: string,
   params: { [key: string]: string }
 ) => {
-  console.log({ routeProps, params });
   let path = routes[routeProps as keyof typeof routes];
   if (!path) {
     throw new Error(`Route name ${routeProps} does not exist`);

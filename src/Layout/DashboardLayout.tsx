@@ -10,6 +10,7 @@ import { useQuery } from "@tanstack/react-query";
 import { routes } from "../utils/routes";
 import { AxiosError } from "axios";
 import { setUserInfo } from "../store/slices/user.slice";
+import Spinner from "../components/Spinner";
 
 const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   const dispatch = useDispatch();
@@ -20,6 +21,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   const { data, error, isError, isLoading } = useQuery({
     queryKey: ["userInfo"],
     queryFn: getUserInfo,
+    retry: 2,
   });
 
   useEffect(() => {
@@ -37,7 +39,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
     }
   }, [data, dispatch]);
 
-  if (isLoading) return <div>is loading</div>;
+  if (isLoading) return <Spinner />;
   if (error) return <div>Error fetching data</div>;
   return (
     <Box

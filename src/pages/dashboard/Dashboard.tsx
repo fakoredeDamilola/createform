@@ -2,14 +2,12 @@ import { useState } from "react";
 import { Box, Button, Stack, Typography, useMediaQuery } from "@mui/material";
 import { Add, Close, Search } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
 import DashboardOutlined from "@mui/icons-material/DashboardOutlined";
 import WorkSpaceUISetting from "../../components/Dashboard/WorkSpaceUISetting";
 import NoFormUI from "../../components/Dashboard/NoFormUI";
 import theme from "../../styles/theme";
 import DashboardLayout from "../../Layout/DashboardLayout";
 import { getRoute } from "../../utils/routes";
-import { createNewForm } from "../../store/slices/form.slice";
 import { DashboardTabs, formTabHeaders } from "../../utils/constants";
 import { colors } from "../../styles/colors";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -28,7 +26,6 @@ const Dashboard = () => {
   const { mutate } = useMutation({
     mutationFn: createNewFormApi,
     onSuccess: (data) => {
-      dispatch(createNewForm({ newForm: data }));
       const route = getRoute("createForm", { formId: data._id });
       navigate(route);
     },
@@ -38,7 +35,6 @@ const Dashboard = () => {
   });
 
   const navigate = useNavigate();
-  const dispatch = useDispatch();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
   const openCreateForm = () => {

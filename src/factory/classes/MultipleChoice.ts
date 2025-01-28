@@ -4,32 +4,20 @@ import { QuestionSkeleton } from "./Question";
 
 export default class MultipleChoice extends QuestionSkeleton {
   questionFormat: "Text" | "Video";
-  questionDescription: string;
-  required: boolean;
-  characterLimit: boolean;
   questionNumber: number;
-  questionText: string;
   options: IOption[];
 
   constructor(
-    questionFormat: "Text" | "Video",
-    questionDescription: string,
-    required: boolean,
-    characterLimit: boolean,
-    questionNumber: number,
-    questionText: string,
     formId: string,
     questionType: QuestionType,
     questionId: string,
+    questionFormat: "Text" | "Video",
+    questionNumber: number,
     options: IOption[]
   ) {
     super(formId, questionType, questionId);
     this.questionFormat = questionFormat;
-    this.questionDescription = questionDescription;
-    this.required = required;
-    this.characterLimit = characterLimit;
     this.questionNumber = questionNumber;
-    this.questionText = questionText;
     this.options = options;
   }
 }

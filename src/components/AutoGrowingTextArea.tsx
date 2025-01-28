@@ -9,6 +9,7 @@ const AutoGrowingTextArea = ({
   noBgColor,
   borderB,
   characterLimit,
+  disableInput,
 }: {
   fontSize: string;
   placeholder: string;
@@ -17,6 +18,7 @@ const AutoGrowingTextArea = ({
   noBgColor?: boolean;
   borderB?: boolean;
   characterLimit?: string;
+  disableInput?: boolean;
 }) => {
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
 
@@ -32,6 +34,7 @@ const AutoGrowingTextArea = ({
       ref={textareaRef}
       onInput={handleInput}
       placeholder={placeholder}
+      disabled={disableInput}
       style={{
         backgroundColor: noBgColor ? "transparent" : "auto",
         width: "100%",

@@ -16,23 +16,27 @@ import Spinner from "../../components/Spinner";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store/store";
 import { QuestionType } from "../../utils/constants";
+import { buildNewQuestion } from "../../utils/functions";
 
 const CreateForm = () => {
   const params = useParams();
   const dispatch = useDispatch();
   const form = useSelector((state: RootState) => state.form.form);
 
-  const { data, error, isLoading } = useQuery({
+  const { data, isLoading } = useQuery({
     queryKey: ["getFormById", params.formId],
     queryFn: ({ queryKey }) => getFormById(queryKey[1] as string),
     enabled: !!params.formId,
   });
 
-  console.log({
-    data,
-    error,
-    isLoading,
-  });
+  const createNewQuestion = async () => {
+    const newQuestion = await buildNewQuestion(
+      1,
+      QuestionType.short_text,
+      data?.data?._id
+    );
+    dispatch(addNewQuestionToForm({ questionInfo: newQuestion }));
+  };
 
   useEffect(() => {
     if (data) {
@@ -40,7 +44,7 @@ const CreateForm = () => {
     }
 
     if (data?.data.questions.length === 0) {
-      dispatch(addNewQuestionToForm({ questionType: QuestionType.short_text }));
+      createNewQuestion();
     }
   }, [data, dispatch]);
 
@@ -59,8 +63,8 @@ const CreateForm = () => {
           mt={isMobile ? "250px" : "0"}
           sx={{ overflowY: "hidden" }}
         >
-          <LeftSideBar questions={form?.questions} formId={form._id} />
-          <Main form={form} />
+          <LeftSideBar form={form} formId={form._id} />
+          <Main />
           <RightSideBar />
         </Stack>
       ) : (

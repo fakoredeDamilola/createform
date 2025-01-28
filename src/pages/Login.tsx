@@ -51,7 +51,6 @@ const Login = () => {
           response,
         })
         .then((res) => {
-          console.log("User info from backend:", res.data.access_token);
           setTokenInLocalStorage(res.data.access_token);
           navigate(routes.dashboard);
         })
@@ -124,7 +123,6 @@ const Login = () => {
     },
     validationSchema: validationSchema,
     onSubmit: (values, { setSubmitting }) => {
-      console.log("Form Submitted", values);
       loginWithEmail(values);
       setSubmitting(false);
     },

@@ -1,53 +1,63 @@
-import { Box, Stack, Typography } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import { Box } from "@mui/material";
+import { useEffect, useState } from "react";
 import MainHeader from "./MainHeader";
-import { DeviceOrientation, QuestionType } from "../../utils/constants";
-import { colors } from "../../styles/colors";
+import {
+  DeviceOrientation,
+  FormItemType,
+  QuestionType,
+} from "../../utils/constants";
 import { useDispatch } from "react-redux";
 import {
   addNewQuestionToForm,
   setOpenPublishModal,
   updateQuestionInfo,
 } from "../../store/slices/form.slice";
-import { IForm } from "../../interfaces/IForm";
-import { ArrowRightAltOutlined } from "@mui/icons-material";
-import AutoGrowingTextArea from "../AutoGrowingTextArea";
 import FormElementModal from "../modals/FormElementModal";
-import CreateQuestionOptions from "./CreateQuestionOptions";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store/store";
 import FormSettingModal from "../modals/FormSettingModal";
 import PublishFormModal from "../modals/PublishFormModal";
+import { buildNewQuestion } from "../../utils/functions";
+import useDebounce from "../../hooks/useDebounce";
+import { IQuestion } from "../../interfaces/IQuestion";
+import CreateQuestionSheet from "./CreateQuestionSheet";
+import CreateFormStaticSheet from "./CreateFormStaticSheet";
+import { IStaticPage } from "../../interfaces/IStaticPage";
 
-interface IProps {
-  form: IForm;
-}
-
-const Main = ({ form }: IProps) => {
-  const { selectedQuestion, openPublishModal, formString } = useSelector(
+const Main = () => {
+  const { selectedQuestion, openPublishModal, formString, form } = useSelector(
     (state: RootState) => state.form
   );
 
   const [deviceOrientation, setDeviceOrientation] = useState(
     DeviceOrientation.mobile
   );
-  const [questionText, setQuestionText] = useState(
-    selectedQuestion?.questionText || ""
-  );
-  const [questionDescription, setQuestionDescription] = useState(
-    selectedQuestion?.questionDescription || ""
-  );
+  const [debouncedQuestionText, setDebouncedQuestionText] = useState("");
+  const debouncedQuestion = useDebounce(debouncedQuestionText, 500);
+
+  const [questionDescription, setQuestionDescription] = useState<string>("");
   const [openCreateFormElementModal, setOpenCreateFormElementModal] =
     useState(false);
   const [openFormSettingModal, setOpenFormSettingModal] = useState(false);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (selectedQuestion) {
-      setQuestionText(selectedQuestion.questionText);
-      setQuestionDescription(selectedQuestion.questionDescription);
+    if (
+      selectedQuestion &&
+      selectedQuestion.formItemType === FormItemType.QUESTION
+    ) {
+      setDebouncedQuestionText((selectedQuestion as IQuestion).questionText);
+      setQuestionDescription(
+        (selectedQuestion as IQuestion).questionDescription
+      );
     }
   }, [selectedQuestion]);
+
+  useEffect(() => {
+    if (debouncedQuestion !== "") {
+      updateQuestionDetails(debouncedQuestion, "questionText");
+    }
+  }, [debouncedQuestion, dispatch]);
 
   const changeDeviceOrientation = () => {
     setDeviceOrientation(
@@ -57,21 +67,24 @@ const Main = ({ form }: IProps) => {
     );
   };
 
-  const createNewQuestion = (questionType: QuestionType) => {
-    dispatch(addNewQuestionToForm({ questionType }));
+  const createNewQuestion = async (questionType: QuestionType) => {
+    const response = await buildNewQuestion(
+      form.questions[form.questions.length - 1].questionNumber + 1,
+      questionType,
+      form._id
+    );
+    dispatch(addNewQuestionToForm({ questionInfo: response }));
   };
 
   const updateQuestionDetails = (value: string, key: string) => {
-    if (value.length % 3 === 0) {
-      if (form._id && selectedQuestion?.questionId) {
-        dispatch(
-          updateQuestionInfo({
-            questionId: selectedQuestion?.questionId,
-            value,
-            key,
-          })
-        );
-      }
+    if (form._id && selectedQuestion?.questionId) {
+      dispatch(
+        updateQuestionInfo({
+          questionId: selectedQuestion?.questionId,
+          value,
+          key,
+        })
+      );
     }
   };
 
@@ -83,76 +96,21 @@ const Main = ({ form }: IProps) => {
         deviceOrientation={deviceOrientation}
         changeDeviceOrientation={changeDeviceOrientation}
       />
-      <Stack
-        width="40%"
-        height="86%"
-        margin="20px auto"
-        border={`1px solid ${colors.borderTwo}`}
-        sx={{
-          overflowY: "scroll",
-        }}
-        alignItems="center"
-        flexDirection="row"
-        padding=" 20px"
-        boxSizing="border-box"
-      >
-        <Box>
-          <Stack direction="row" width="100%">
-            <Typography>{selectedQuestion?.questionNumber}</Typography>
-            <ArrowRightAltOutlined
-              style={{ fontSize: "10px", marginTop: "7px" }}
-            />
-            <Box>
-              <AutoGrowingTextArea
-                fontSize="16px"
-                placeholder="Your question here"
-                value={questionText}
-                setValue={(value: string) => {
-                  setQuestionText(value);
-                  updateQuestionDetails(value, "questionText");
-                }}
-              />
-              <AutoGrowingTextArea
-                fontSize="12px"
-                placeholder="Description (optional)"
-                value={questionDescription}
-                setValue={(value: string) => {
-                  setQuestionDescription(value);
-                  updateQuestionDetails(value, "questionDescription");
-                }}
-              />
-              {selectedQuestion?.questionType === QuestionType.short_text ||
-              selectedQuestion?.questionType === QuestionType.long_text ||
-              selectedQuestion?.questionType === QuestionType.email ||
-              selectedQuestion?.questionType === QuestionType.number ? (
-                <input
-                  placeholder={
-                    selectedQuestion?.questionType === QuestionType.email
-                      ? "name@example.com"
-                      : "Type your answer here..."
-                  }
-                  style={{
-                    fontSize: "22px",
-                    width: "100%",
-                    border: `none`,
-
-                    backgroundColor: "transparent",
-                    paddingBottom: "5px",
-                  }}
-                  disabled
-                />
-              ) : selectedQuestion?.questionType ===
-                  QuestionType.multiple_choice ||
-                selectedQuestion?.questionType === QuestionType.boolean ? (
-                <CreateQuestionOptions
-                  questionId={selectedQuestion.questionId}
-                  questionType={selectedQuestion.questionType}
-                />
-              ) : null}
-            </Box>
-          </Stack>
-        </Box>
-      </Stack>
+      {selectedQuestion.formItemType === FormItemType.QUESTION ? (
+        <CreateQuestionSheet
+          selectedQuestion={selectedQuestion as IQuestion}
+          addAnswerToQuestion={form.formSettings.addAnswerToQuestion}
+          updateQuestionDetails={updateQuestionDetails}
+          questionDescription={questionDescription}
+          setQuestionDescription={setQuestionDescription}
+          debouncedQuestionText={debouncedQuestionText}
+          setDebouncedQuestionText={setDebouncedQuestionText}
+        />
+      ) : selectedQuestion.formItemType === FormItemType.STATIC ? (
+        <CreateFormStaticSheet staticSheet={selectedQuestion as IStaticPage} />
+      ) : (
+        <div>yes</div>
+      )}
 
       <FormElementModal
         createNewQuestion={createNewQuestion}
@@ -161,9 +119,9 @@ const Main = ({ form }: IProps) => {
       />
 
       <FormSettingModal
-        formId={form._id}
         isOpen={openFormSettingModal}
         onClose={() => setOpenFormSettingModal(false)}
+        form={form}
       />
       <PublishFormModal
         formURL={`${formString}/${form.slug}`}

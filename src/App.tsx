@@ -5,11 +5,12 @@ import {
   unauthenticatedRoutes,
 } from "./utils/routeComponents";
 import AuthLayout from "./Layout/AuthLayout";
+import Spinner from "./components/Spinner";
 
 function App() {
   return (
     <Router>
-      <Suspense fallback={<div>Loading...</div>}>
+      <Suspense fallback={<Spinner />}>
         <Routes>
           {unauthenticatedRoutes.map((route, index) => (
             <Route

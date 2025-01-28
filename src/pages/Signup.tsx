@@ -40,7 +40,6 @@ const Signup = () => {
           response,
         })
         .then((res) => {
-          console.log("User info from backend:", res.data.access_token);
           setTokenInLocalStorage(res.data.access_token);
           navigate(routes.dashboard);
         })
@@ -100,7 +99,6 @@ const Signup = () => {
     },
 
     onSuccess: (data) => {
-      console.log("Login successful:", data);
       setTokenInLocalStorage(data.data.access_token);
       showToast({
         type: "success",
@@ -130,7 +128,6 @@ const Signup = () => {
     },
     validationSchema: validationSchema,
     onSubmit: (values, { setSubmitting }) => {
-      console.log("Form Submitted", values);
       loginWithEmail(values);
       setSubmitting(false);
     },

@@ -5,22 +5,22 @@ import { useNavigate } from "react-router-dom";
 import showToast from "../CustomToast";
 
 const AuthLayout = ({ children }: { children: React.ReactNode }) => {
-  const [authToken, setAuthToken] = useState("8488");
+  const [authToken, setAuthToken] = useState("");
   const navigate = useNavigate();
 
-  // useEffect(() => {
-  //   const token = localStorage.getItem("token");
-  //   if (token) setAuthToken(token);
-  //   else {
-  //     showToast({
-  //       type: "error",
-  //       message: "You are not authenticated",
-  //     });
-  //     setTimeout(() => {
-  //       navigate(routes.home);
-  //     }, 3000);
-  //   }
-  // }, []);
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) setAuthToken(token);
+    else {
+      showToast({
+        type: "error",
+        message: "You are not authenticated",
+      });
+      setTimeout(() => {
+        navigate(routes.home);
+      }, 3000);
+    }
+  }, []);
 
   if (authToken) {
     return <Box>{children}</Box>;

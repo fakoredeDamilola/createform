@@ -1,17 +1,24 @@
 import { Box, Stack } from "@mui/material";
 import { colors } from "../../styles/colors";
 import { useState } from "react";
-import { IQuestion } from "../../interfaces/IQuestion";
 import QuestionListItem from "./QuestionListItem";
+import StaticPageItem from "./custom/StaticPageItem";
+import { IForm } from "../../interfaces/IForm";
+import { renumberQuestions } from "../../utils/functions";
+import { setQuestions } from "../../store/slices/form.slice";
+import { useDispatch } from "react-redux";
+import { deleteQuestionApi } from "../../api/dashboard.api";
 
 interface IProps {
-  questions: IQuestion[];
+  form: IForm;
   formId: string;
 }
 
-const LeftSideBar = ({ questions, formId }: IProps) => {
+const LeftSideBar = ({ form, formId }: IProps) => {
   const [topHeight, setTopHeight] = useState(60);
   const [isResizing, setIsResizing] = useState(false);
+  const questions = form.questions;
+  const dispatch = useDispatch();
 
   const handleMouseDown = () => {
     setIsResizing(true);
@@ -26,6 +33,24 @@ const LeftSideBar = ({ questions, formId }: IProps) => {
 
   const handleMouseUp = () => {
     setIsResizing(false);
+  };
+
+  const deleteQuestionFunc = async (questionId: string) => {
+    const questions = [...form.questions];
+    const questionIndex = questions.findIndex(
+      (question) => question._id === questionId
+    );
+    console.log({ questionIndex });
+    if (questionIndex) {
+      questions.splice(questionIndex, 1);
+      console.log({ q: questions });
+      const newQuestions = renumberQuestions(questions);
+      console.log({ newQuestions });
+      await deleteQuestionApi(questionId, formId);
+      // dispatch(setQuestions({ newQuestions }));
+
+      // handleClose();
+    }
   };
 
   return (
@@ -48,7 +73,11 @@ const LeftSideBar = ({ questions, formId }: IProps) => {
       >
         {questions?.map((question) => (
           <Box margin="10px 0" key={question.questionId}>
-            <QuestionListItem formId={formId} question={question} />
+            <QuestionListItem
+              formId={formId}
+              question={question}
+              deleteQuestionFunc={deleteQuestionFunc}
+            />
           </Box>
         ))}
       </div>
@@ -74,9 +103,20 @@ const LeftSideBar = ({ questions, formId }: IProps) => {
           height: `${100 - topHeight - 2}%`,
           backgroundColor: colors.secondaryColor,
           borderRadius: "12px",
+          padding: "15px 0",
+          overflowY: "scroll",
         }}
       >
-        <p>Bottom Content</p>
+        {form.formStartPage && (
+          <Box p="10px 0">
+            <StaticPageItem staticPage={form?.formStartPage} />
+          </Box>
+        )}
+        {form.formEndPage && (
+          <Box p="10px 0">
+            <StaticPageItem staticPage={form?.formEndPage} />
+          </Box>
+        )}
       </div>
     </Box>
   );

@@ -2,21 +2,26 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { v4 as uuidv4 } from "uuid";
 import { IForm } from "../../interfaces/IForm";
 import {
-  createAQuestionSkeleton,
   createNewOptionSkeleton,
+  createNewQuestionAnswer,
   getNextEnumValue,
-  renumberQuestions,
+  updateStartPageInstruction,
 } from "../../utils/functions";
-import { BooleanLabel, OptionLabel, QuestionType } from "../../utils/constants";
+import {
+  FormStaticType,
+  OptionLabel,
+  QuestionType,
+} from "../../utils/constants";
 import { IQuestion } from "../../interfaces/IQuestion";
 import { IFormSetting } from "../../interfaces/IFormSetting";
 import { IResponseDetail } from "../../interfaces/IResponseDetail";
 import { IAnswer } from "../../interfaces/IAnswer";
 import { IQuestionWithAnswer } from "../../interfaces/IQuestionWithAnswer";
+import { IStaticPage } from "../../interfaces/IStaticPage";
 
 interface FormState {
   forms: IForm[];
-  selectedQuestion: IQuestion;
+  selectedQuestion: IQuestion | IStaticPage;
   openPublishModal: boolean;
   formString: string;
   form: IForm;
@@ -43,14 +48,18 @@ const formSlice = createSlice({
         state.openPublishModal = action.payload;
       }
     },
+    createNewFormEncryption: (state, action: PayloadAction<string>) => {
+      state.form.encryptionDetails.push(action.payload);
+    },
+    removeValueFromEncryption: (state, action: PayloadAction<number>) => {
+      state.form.encryptionDetails.splice(action.payload, 1);
+    },
     setForm: (state, action: PayloadAction<{ form: IForm }>) => {
-      state.form = action.payload.form;
+      const { form } = action.payload;
+      state.form = form;
       if (state.form.questions?.length > 0) {
         state.selectedQuestion = state.form.questions[0];
       }
-    },
-    createNewForm: (state, action: PayloadAction<{ newForm: IForm }>) => {
-      const { newForm } = action.payload;
     },
     updateFormName: (state, action: PayloadAction<{ formName: string }>) => {
       const { formName } = action.payload;
@@ -58,62 +67,62 @@ const formSlice = createSlice({
         state.form.formName = formName;
       }
     },
-    updateFormDetails: (
+    updateFormSettingDetails: (
       state,
       action: PayloadAction<{
         formSettings: IFormSetting;
       }>
     ) => {
       const { formSettings } = action.payload;
-
       if (state.form) {
         state.form.formSettings = formSettings;
+        if (formSettings.popQuiz) {
+          formSettings.addAnswerToQuestion = true;
+        }
+        const instructions = updateStartPageInstruction(
+          formSettings,
+          state.form.totalFormTimeLimit
+        );
+        if (instructions.length > 0) {
+          state.form.formStartPage.autoInstructions = instructions;
+        }
+      }
+    },
+
+    updateFormDetails: (
+      state,
+      action: PayloadAction<{
+        key: string;
+        value: string | boolean;
+      }>
+    ) => {
+      const { key, value } = action.payload;
+      const form = state.form;
+      if (state.form) {
+        (form as unknown as Record<string, string | boolean>)[key] = value;
       }
     },
     addNewQuestionToForm: (
       state,
-      action: PayloadAction<{ questionType: QuestionType }>
+      action: PayloadAction<{ questionInfo: IQuestion }>
     ) => {
-      console.log("here");
-      const { questionType } = action.payload;
+      const { questionInfo } = action.payload;
       const form = state.form;
       if (form) {
-        const newQuestionNumber = form.noOfQuestions + 1;
-        const newQuestion = createAQuestionSkeleton(
-          questionType,
-          form._id,
-          newQuestionNumber
-        );
-        console.log({ newQuestion });
-        if (newQuestion) {
-          if (questionType === QuestionType.multiple_choice) {
-            const optionLabel = getNextEnumValue(OptionLabel);
-            const newOption = createNewOptionSkeleton(optionLabel);
-            if ("options" in newQuestion) {
-              newQuestion.options = [newOption];
-            }
-          } else if (questionType === QuestionType.boolean) {
-            const booleanOptions = [
-              createNewOptionSkeleton(BooleanLabel.YES, "YES"),
-              createNewOptionSkeleton(BooleanLabel.NO, "NO"),
-            ];
-            if ("options" in newQuestion) {
-              newQuestion.options = booleanOptions;
-            }
-          }
-          form.questions.push(newQuestion);
-          form.noOfQuestions++;
-          state.selectedQuestion = newQuestion;
-        }
+        form.questions.push(questionInfo);
+        form.noOfQuestions++;
+        state.selectedQuestion = questionInfo;
       }
     },
     selectAQuestion: (state, action: PayloadAction<{ questionId: string }>) => {
       const { questionId } = action.payload;
 
       const form = state.form;
-      const findQuestion = form?.questions.find(
-        (question) => question.questionId === questionId
-      );
+      const findQuestion = [
+        ...form.questions,
+        form.formEndPage,
+        form.formStartPage,
+      ].find((question) => question.questionId === questionId);
 
       if (findQuestion) {
         state.selectedQuestion = findQuestion;
@@ -137,6 +146,30 @@ const formSlice = createSlice({
       if (findQuestion) {
         (findQuestion as unknown as Record<string, string | boolean>)[key] =
           value;
+        if (key === "timeLimit") {
+          if (typeof value === "boolean") {
+            findQuestion.required = value;
+          }
+        }
+      }
+    },
+    updateStaticPageInfo: (
+      state,
+      action: PayloadAction<{
+        key: string;
+        value: string | boolean;
+        staticPage: string;
+      }>
+    ) => {
+      const { key, value, staticPage } = action.payload;
+
+      const findPage =
+        staticPage === FormStaticType.START
+          ? state.form.formStartPage
+          : state.form.formEndPage;
+
+      if (findPage) {
+        (findPage as unknown as Record<string, string | boolean>)[key] = value;
       }
     },
     addNewOptionToMultipleChoice: (
@@ -146,10 +179,9 @@ const formSlice = createSlice({
       }>
     ) => {
       const { questionId } = action.payload;
-
       const form = state.form;
       const question = form?.questions.find(
-        (question) => question.questionId === questionId
+        (question) => question._id === questionId
       );
       if (
         question?.questionType === QuestionType.multiple_choice &&
@@ -208,7 +240,7 @@ const formSlice = createSlice({
 
       const form = state.form;
       const question = form?.questions.find(
-        (question) => question.questionId === questionId
+        (question) => question._id === questionId
       );
       if (
         (question?.questionType === QuestionType.multiple_choice ||
@@ -230,7 +262,6 @@ const formSlice = createSlice({
             }));
             option.selectedOption = select;
           }
-          console.log(question.options);
           question.options.splice(optionIndex, 1, option);
           if (form) {
             form.questions = [...form.questions];
@@ -289,24 +320,65 @@ const formSlice = createSlice({
         form.questions.push(newQuestion);
       }
     },
-    deleteQuestion: (
+    setQuestions: (
       state,
       action: PayloadAction<{
-        questionId: string;
+        questions: IQuestion[];
       }>
     ) => {
-      const { questionId } = action.payload;
+      const { questions } = action.payload;
 
-      const form = state.form;
-      const questionIndex = form?.questions.findIndex(
-        (question) => question.questionId === questionId
+      state.form.questions = questions;
+    },
+
+    createOrUpdateQuestionAnswer: (
+      state,
+      action: PayloadAction<{
+        questionAnswer: string;
+        formId: string;
+        questionId: string;
+        questionType: QuestionType;
+      }>
+    ) => {
+      const { formId, questionId, questionAnswer, questionType } =
+        action.payload;
+
+      const checkIfQuestionAnswerExist = state.form.questions.find(
+        (question) => question._id === questionId
+      )?.correctAnswer;
+      const selectedQuestionIndex = state.form.questions.findIndex(
+        (question) => question._id === questionId
       );
+      const selectedQuestionForAnswer =
+        state.form.questions[selectedQuestionIndex];
+      if (!checkIfQuestionAnswerExist) {
+        const newQuestionAnswer = createNewQuestionAnswer(
+          questionAnswer,
+          formId,
+          questionId,
+          questionType
+        );
 
-      if (form && questionIndex) {
-        form.questions.splice(questionIndex, 1);
-        const questions = renumberQuestions(form.questions);
-        console.log({ questions });
-        form.questions = questions;
+        selectedQuestionForAnswer.correctAnswer = newQuestionAnswer;
+      } else {
+        if (
+          checkIfQuestionAnswerExist.questionType ===
+          QuestionType.multiple_selection
+        ) {
+          selectedQuestionForAnswer.correctAnswer?.answerResults.push(
+            questionAnswer
+          );
+        } else {
+          selectedQuestionForAnswer.correctAnswer.answerResults = [
+            questionAnswer,
+          ];
+        }
+
+        state.form.questions.splice(
+          selectedQuestionIndex,
+          1,
+          selectedQuestionForAnswer
+        );
       }
     },
   },
@@ -314,9 +386,8 @@ const formSlice = createSlice({
 
 export const {
   setOpenPublishModal,
-  createNewForm,
   updateFormName,
-  updateFormDetails,
+  updateFormSettingDetails,
   addNewQuestionToForm,
   updateQuestionInfo,
   addNewOptionToMultipleChoice,
@@ -324,8 +395,13 @@ export const {
   removeQuestionOption,
   duplicateQuestion,
   selectAQuestion,
-  deleteQuestion,
+  setQuestions,
   setForm,
   addResultsToQuestions,
+  createOrUpdateQuestionAnswer,
+  updateFormDetails,
+  createNewFormEncryption,
+  removeValueFromEncryption,
+  updateStaticPageInfo,
 } = formSlice.actions;
 export default formSlice.reducer;

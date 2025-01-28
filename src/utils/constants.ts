@@ -45,10 +45,21 @@ enum QuestionType {
   short_text = "Short Text",
   long_text = "Long Text",
   multiple_choice = "Multiple Choice",
+  multiple_selection = "Multiple Selection",
   statement = "Statement",
   email = "Email",
   number = "Number",
   boolean = "Boolean",
+}
+
+enum FormItemType {
+  QUESTION = "QUESTION",
+  STATIC = "STATIC",
+}
+
+enum FormStaticType {
+  START = "START",
+  END = "END",
 }
 
 enum OptionLabel {
@@ -57,6 +68,11 @@ enum OptionLabel {
   C = "C",
   D = "D",
   E = "E",
+}
+
+enum ResponseType {
+  CREATE = "CREATE",
+  UPDATE = "UPDATE",
 }
 
 enum BooleanLabel {
@@ -80,4 +96,7 @@ export {
   OptionLabel,
   BooleanLabel,
   EncryptionType,
+  ResponseType,
+  FormItemType,
+  FormStaticType,
 };
