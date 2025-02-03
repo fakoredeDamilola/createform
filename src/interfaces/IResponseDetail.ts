@@ -7,6 +7,7 @@ export interface IResponseDetail {
   name?: string;
   noOfQuestionsAnswered: number;
   encryptionType: EncryptionType;
+  encryptionDetails: { [key: string]: string };
   totalTimeTaken: string;
   submissionDate: string;
   formId: string;

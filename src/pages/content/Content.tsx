@@ -12,6 +12,7 @@ import {
 } from "@mui/material";
 import { colors } from "../../styles/colors";
 import {
+  changeCurrentContentPage,
   moveToNextOrPrevQuestion,
   setFormViewingMode,
   updateAnswerResponse,
@@ -20,7 +21,10 @@ import {
 } from "../../store/slices/content.slice";
 import { CSSTransition } from "react-transition-group";
 import { useMutation } from "@tanstack/react-query";
-import { createResponseApi } from "../../api/dashboard.api";
+import {
+  createResponseApi,
+  updateAnswerInResponseApi,
+} from "../../api/dashboard.api";
 import { checkQuestionRule } from "../../utils/functions";
 import theme from "../../styles/theme";
 import { IAnswer } from "../../interfaces/IAnswer";
@@ -31,16 +35,24 @@ import ContentTimer from "../../components/content/ContentTimer";
 import SubmitButton from "../../components/content/SubmitButton";
 import { IQuestionAnswer } from "../../interfaces/IQuestionAnswer";
 import AnswerBox from "../../components/content/AnswerBox";
-import { ResponseType } from "../../utils/constants";
+import { FormItemType, ResponseType } from "../../utils/constants";
 import { localStorageService } from "../../factory/classes/LocalStorage";
+import ContentStaticPage from "../../components/content/staticPages/ContentStaticPage";
 
 const Content = () => {
   const dispatch = useDispatch();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
-  const { form, numberIndex, answers, timeStarted, response } = useSelector(
-    (state: RootState) => state.content
-  );
+  const {
+    form,
+    numberIndex,
+    answers,
+    timeStarted,
+    response,
+    contentCurrentPage,
+    contentCurrentStaticPage,
+    disableNextButton,
+  } = useSelector((state: RootState) => state.content);
 
   const [currentIndex, setCurrentIndex] = useState(numberIndex);
   const [correctAnswer, setCorrectAnswer] = useState<IQuestionAnswer | null>(
@@ -55,9 +67,21 @@ const Content = () => {
   });
 
   const { data, status, mutateAsync } = useMutation({
+    mutationFn: updateAnswerInResponseApi,
+    onSuccess: (data) => {
+      const correctAnswer = data?.data.correctAnswer;
+      setCorrectAnswer(correctAnswer);
+    },
+    onError: (error) => {
+      // console.error("Error creating item:", error);
+    },
+  });
+
+  const { data: responseData, mutate } = useMutation({
     mutationFn: createResponseApi,
     onSuccess: (data) => {
-      // console.log("Item created successfully:", data);
+      console.log("Answer updated", data);
+
       dispatch(updateResponseDetails({ response: data.data.response }));
     },
     onError: (error) => {
@@ -76,15 +100,19 @@ const Content = () => {
   const nodeRef = useRef(null);
   const timeout = 300;
 
-  const updateResponses = async (ans?: IAnswer[]) => {
+  const updateAnswerInResponse = async (
+    popQuiz?: boolean,
+    responseSubmitted?: boolean,
+    ans?: IAnswer
+  ) => {
     const answer = answers[currentIndex];
+    console.log({ answer });
     await mutateAsync({
       responseId: response._id,
-      answers: ans ? ans : [answer],
+      answer: ans ? ans : answer,
       formId: form._id,
-      formSlug: form.slug,
-      timeStarted,
-      responseType: ResponseType.UPDATE,
+      popQuiz,
+      responseSubmitted,
     });
   };
 
@@ -123,7 +151,7 @@ const Content = () => {
   const changeQuestion = (direction: number) => {
     const questionNumber = currentIndex + direction;
     setShowErrorBox({ showBox: false, text: "" });
-    updateResponses();
+    updateAnswerInResponse(form.formSettings.popQuiz);
     setIsExiting(true);
     setTimeout(() => {
       setCurrentIndex(questionNumber);
@@ -145,7 +173,7 @@ const Content = () => {
     if (rule.showBox === true) {
       setShowErrorBox(rule);
     } else {
-      updateResponses();
+      updateAnswerInResponse(false, true);
       setIsFormSubmitted(true);
 
       localStorageService.remove("responseData");
@@ -153,20 +181,35 @@ const Content = () => {
   };
 
   const submitFormBecauseOfTimer = () => {
-    updateResponses([]);
-    setIsFormSubmitted(true);
+    // updateAnswerInResponse(true, true);
+    // setIsFormSubmitted(true);
     localStorageService.remove("responseData");
   };
 
   const submitPopQuiz = async () => {
-    await updateResponses();
+    console.log();
+    await updateAnswerInResponse(true);
+    console.log({ data });
     const correctAnswer = data?.data.correctAnswer;
+    console.log({ correctAnswer });
     if (correctAnswer) {
       updateAnswersArray({ correctAnswer });
-      setCorrectAnswer(correctAnswer);
       dispatch(setFormViewingMode(true));
       setShowAnswerDetails(true);
     }
+  };
+
+  const updateEncryptionDetails = (inputValues: { [key: string]: string }) => {
+    mutate({
+      responseId: response._id,
+      answers: [],
+      formId: form._id,
+      formSlug: form.slug,
+      timeStarted,
+      responseType: ResponseType.UPDATE,
+      encryptionDetails: inputValues,
+    });
+    dispatch(changeCurrentContentPage({ itemType: FormItemType.QUESTION }));
   };
 
   const moveToNextQuestion = () => {
@@ -185,121 +228,138 @@ const Content = () => {
 
   return (
     <ContentLayout>
-      {!isFormSubmitted ? (
+      {contentCurrentPage === FormItemType.STATIC &&
+      contentCurrentStaticPage ? (
         <>
-          <LinearProgress
-            variant="determinate"
-            value={progress}
-            sx={{
-              height: 6,
-              borderRadius: 5,
-              backgroundColor: colors.bgOptionTextHover,
-              "& .MuiLinearProgress-bar": {
-                backgroundColor: colors.bgOptionText,
-              },
-            }}
+          <ContentStaticPage
+            response={response}
+            form={form}
+            contentCurrentStaticPage={contentCurrentStaticPage}
+            updateEncryptionDetails={updateEncryptionDetails}
           />
-          <Stack maxWidth="90%" minWidth="90%" height="100%" margin="0 auto">
-            {questions && (
-              <CSSTransition
-                in={!isExiting}
-                timeout={timeout}
-                classNames="content"
-                unmountOnExit
-                nodeRef={nodeRef}
-              >
-                {(state) => (
-                  <>
-                    <Stack
-                      ref={nodeRef}
-                      justifyContent="center"
-                      minHeight="80%"
-                      sx={{
-                        ...slideStyles[state as keyof typeof slideStyles],
-                      }}
-                    >
-                      {form.formSettings.addTimeLimitToForm &&
-                        form.totalFormTimeLimit && (
-                          <Box position="fixed" bgcolor="red">
-                            <ContentTimer
-                              duration={form.totalFormTimeLimit}
-                              onTimeUp={submitFormBecauseOfTimer}
-                            />
-                          </Box>
-                        )}
-                      <Stack
-                        boxSizing="border-box"
-                        px={isMobile ? "0px" : "80px"}
-                        mt="40px"
-                        justifyContent="center"
-                      >
-                        <ContentQuestion
-                          question={questions[currentIndex]}
-                          answer={answers[currentIndex]}
-                          correctAnswer={correctAnswer}
-                          setErrorBox={setShowErrorBox}
-                          onTimeUp={onTimeUp}
-                        >
-                          {showErrorBox.showBox ? (
-                            <ErrorBox text={showErrorBox.text} />
-                          ) : isMobile ? null : (
-                            <SubmitButton
-                              popQuiz={form?.formSettings?.popQuiz}
-                              showAnswerDetails={showAnswerDetails}
-                              notLastQuestion={notLastQuestion}
-                              validateQuestionWithRule={
-                                validateQuestionWithRule
-                              }
-                              disableCheckButton={
-                                answers[currentIndex]?.optionId === ""
-                                  ? true
-                                  : false
-                              }
-                              submitPopQuiz={submitPopQuiz}
-                              submitForm={submitForm}
-                            >
-                              <AnswerBox
-                                answer={correctAnswer}
-                                moveToNextQuestion={moveToNextQuestion}
-                                question={questions && questions[currentIndex]}
-                              />
-                            </SubmitButton>
-                          )}
-                        </ContentQuestion>
-                      </Stack>
-                    </Stack>
-                  </>
-                )}
-              </CSSTransition>
-            )}
-            <ChangeQuestionButtons
-              popQuiz={form?.formSettings?.popQuiz}
-              currentIndex={currentIndex}
-              changeQuestion={validateQuestionWithRule}
-              noOfQuestions={questions?.length}
-            >
-              <SubmitButton
-                popQuiz={form?.formSettings?.popQuiz}
-                showAnswerDetails={showAnswerDetails}
-                notLastQuestion={notLastQuestion}
-                disableCheckButton={
-                  answers[currentIndex]?.optionId === "" ? true : false
-                }
-                validateQuestionWithRule={validateQuestionWithRule}
-                submitPopQuiz={submitPopQuiz}
-                submitForm={submitForm}
-              >
-                <AnswerBox
-                  answer={correctAnswer}
-                  moveToNextQuestion={moveToNextQuestion}
-                  question={questions && questions[currentIndex]}
-                />
-              </SubmitButton>
-            </ChangeQuestionButtons>
-          </Stack>
         </>
       ) : (
-        <LastContentPage id={data?.data.response?._id} status={status} />
+        <>
+          {!isFormSubmitted ? (
+            <>
+              <LinearProgress
+                variant="determinate"
+                value={progress}
+                sx={{
+                  height: 6,
+                  borderRadius: 5,
+                  backgroundColor: colors.bgOptionTextHover,
+                  "& .MuiLinearProgress-bar": {
+                    backgroundColor: colors.bgOptionText,
+                  },
+                }}
+              />
+              <Stack
+                maxWidth="90%"
+                minWidth="90%"
+                height="100%"
+                margin="0 auto"
+              >
+                {questions && (
+                  <CSSTransition
+                    in={!isExiting}
+                    timeout={timeout}
+                    classNames="content"
+                    unmountOnExit
+                    nodeRef={nodeRef}
+                  >
+                    {(state) => (
+                      <>
+                        <Stack
+                          ref={nodeRef}
+                          justifyContent="center"
+                          minHeight="80%"
+                          sx={{
+                            ...slideStyles[state as keyof typeof slideStyles],
+                          }}
+                        >
+                          {form.formSettings.addTimeLimitToForm &&
+                            form.totalFormTimeLimit && (
+                              <Box position="fixed" bgcolor="red">
+                                <ContentTimer
+                                  duration={form.totalFormTimeLimit}
+                                  onTimeUp={submitFormBecauseOfTimer}
+                                />
+                              </Box>
+                            )}
+                          <Stack
+                            boxSizing="border-box"
+                            px={isMobile ? "0px" : "80px"}
+                            mt="40px"
+                            justifyContent="center"
+                          >
+                            <ContentQuestion
+                              question={questions[currentIndex]}
+                              answer={answers[currentIndex]}
+                              correctAnswer={correctAnswer}
+                              setErrorBox={setShowErrorBox}
+                              onTimeUp={onTimeUp}
+                            >
+                              {showErrorBox.showBox ? (
+                                <ErrorBox text={showErrorBox.text} />
+                              ) : isMobile ? null : (
+                                <SubmitButton
+                                  popQuiz={form?.formSettings?.popQuiz}
+                                  showAnswerDetails={showAnswerDetails}
+                                  notLastQuestion={notLastQuestion}
+                                  validateQuestionWithRule={
+                                    validateQuestionWithRule
+                                  }
+                                  disableCheckButton={disableNextButton}
+                                  submitPopQuiz={submitPopQuiz}
+                                  submitForm={submitForm}
+                                >
+                                  <AnswerBox
+                                    answer={correctAnswer}
+                                    moveToNextQuestion={moveToNextQuestion}
+                                    question={
+                                      questions && questions[currentIndex]
+                                    }
+                                  />
+                                </SubmitButton>
+                              )}
+                            </ContentQuestion>
+                          </Stack>
+                        </Stack>
+                      </>
+                    )}
+                  </CSSTransition>
+                )}
+                <ChangeQuestionButtons
+                  popQuiz={form?.formSettings?.popQuiz}
+                  currentIndex={currentIndex}
+                  changeQuestion={validateQuestionWithRule}
+                  noOfQuestions={questions?.length}
+                >
+                  <SubmitButton
+                    popQuiz={form?.formSettings?.popQuiz}
+                    showAnswerDetails={showAnswerDetails}
+                    notLastQuestion={notLastQuestion}
+                    disableCheckButton={
+                      answers[currentIndex]?.optionId === "" ? true : false
+                    }
+                    validateQuestionWithRule={validateQuestionWithRule}
+                    submitPopQuiz={submitPopQuiz}
+                    submitForm={submitForm}
+                  >
+                    <AnswerBox
+                      answer={correctAnswer}
+                      moveToNextQuestion={moveToNextQuestion}
+                      question={questions && questions[currentIndex]}
+                    />
+                  </SubmitButton>
+                </ChangeQuestionButtons>
+              </Stack>
+            </>
+          ) : (
+            <LastContentPage id={response?._id} status={status} />
+          )}
+        </>
       )}
     </ContentLayout>
   );

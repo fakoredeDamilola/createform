@@ -75,16 +75,19 @@ const formSlice = createSlice({
     ) => {
       const { formSettings } = action.payload;
       if (state.form) {
-        state.form.formSettings = formSettings;
-        if (formSettings.popQuiz) {
-          formSettings.addAnswerToQuestion = true;
+        const updatedFormSettings = { ...formSettings };
+        if (updatedFormSettings.popQuiz) {
+          updatedFormSettings.addAnswerToQuestion = true;
         }
+
+        state.form.formSettings = updatedFormSettings;
+
         const instructions = updateStartPageInstruction(
-          formSettings,
+          updatedFormSettings,
           state.form.totalFormTimeLimit
         );
         if (instructions.length > 0) {
-          state.form.formStartPage.autoInstructions = instructions;
+          state.form.formStartPage.instructions = instructions;
         }
       }
     },
@@ -346,6 +349,7 @@ const formSlice = createSlice({
       const checkIfQuestionAnswerExist = state.form.questions.find(
         (question) => question._id === questionId
       )?.correctAnswer;
+      console.log({ checkIfQuestionAnswerExist });
       const selectedQuestionIndex = state.form.questions.findIndex(
         (question) => question._id === questionId
       );
@@ -369,6 +373,7 @@ const formSlice = createSlice({
             questionAnswer
           );
         } else {
+          console.log("checking");
           selectedQuestionForAnswer.correctAnswer.answerResults = [
             questionAnswer,
           ];

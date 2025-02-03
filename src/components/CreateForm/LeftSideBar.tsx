@@ -8,6 +8,7 @@ import { renumberQuestions } from "../../utils/functions";
 import { setQuestions } from "../../store/slices/form.slice";
 import { useDispatch } from "react-redux";
 import { deleteQuestionApi } from "../../api/dashboard.api";
+import { IQuestion } from "../../interfaces/IQuestion";
 
 interface IProps {
   form: IForm;
@@ -41,15 +42,12 @@ const LeftSideBar = ({ form, formId }: IProps) => {
       (question) => question._id === questionId
     );
     console.log({ questionIndex });
-    if (questionIndex) {
+    if (questionIndex !== -1) {
       questions.splice(questionIndex, 1);
-      console.log({ q: questions });
-      const newQuestions = renumberQuestions(questions);
-      console.log({ newQuestions });
-      await deleteQuestionApi(questionId, formId);
-      // dispatch(setQuestions({ newQuestions }));
+      const newQuestions: IQuestion[] = renumberQuestions(questions);
 
-      // handleClose();
+      await deleteQuestionApi(questionId, formId);
+      dispatch(setQuestions({ questions: newQuestions }));
     }
   };
 

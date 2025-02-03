@@ -11,34 +11,25 @@ import {
 import { useSelector } from "react-redux";
 import { RootState } from "../../store/store";
 import QuestionOption from "./QuestionOption";
-import { QuestionType } from "../../utils/constants";
-import { useEffect, useState } from "react";
+import { FormItemType, QuestionType } from "../../utils/constants";
 import { colors } from "../../styles/colors";
 import { GrCheckmark } from "react-icons/gr";
-import { IQuestion } from "../../interfaces/IQuestion";
+import { useEffect, useState } from "react";
 
 const CreateQuestionOptions = ({
-  _id,
   questionType,
+  _id,
 }: {
   _id: string;
-
   questionType: QuestionType;
 }) => {
   const dispatch = useDispatch();
 
-  const [selectedQuestion, setSelectedQuestion] = useState<IQuestion | null>();
+  const [selectedOptionId, setSelectedOptionId] = useState<string[]>([]);
 
-  const { form } = useSelector((state: RootState) => state.form);
-
-  useEffect(() => {
-    const findQuestionAnswer = form.questions.find(
-      (question) => question._id === _id
-    );
-    if (findQuestionAnswer) {
-      setSelectedQuestion(findQuestionAnswer);
-    }
-  }, [form, _id]);
+  const { form, selectedQuestion } = useSelector(
+    (state: RootState) => state.form
+  );
 
   const options = form?.questions.find(
     (question) => question._id === _id
@@ -78,15 +69,32 @@ const CreateQuestionOptions = ({
         formId: form._id,
       })
     );
+    selectNewOption();
   };
+
+  const selectNewOption = () => {
+    if (
+      selectedQuestion.formItemType === FormItemType.QUESTION &&
+      "correctAnswer" in selectedQuestion
+    ) {
+      if (selectedQuestion.correctAnswer?.answerResults) {
+        console.log(selectedQuestion.correctAnswer?.answerResults);
+        setSelectedOptionId(selectedQuestion.correctAnswer?.answerResults);
+      } else {
+        setSelectedOptionId([]);
+      }
+    }
+  };
+
+  useEffect(() => {
+    console.log({ selectedQuestion });
+    selectNewOption();
+  }, [selectedQuestion]);
 
   return (
     <Box>
       {options?.map((option: IOption) => {
-        const selectedOption =
-          selectedQuestion?.correctAnswer?.answerResults?.includes(
-            option.optionId
-          );
+        const selectedOption = selectedOptionId?.includes(option.optionId);
 
         return (
           <QuestionOption

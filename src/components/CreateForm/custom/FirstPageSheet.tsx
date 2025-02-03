@@ -78,10 +78,10 @@ const FirstPageSheet = () => {
             ))}
           </Box>
 
-          {staticSheet.autoInstructions && (
+          {staticSheet.instructions && (
             <Box position="absolute" bottom="20px">
               <List>
-                {staticSheet.autoInstructions.map((instruction) => (
+                {staticSheet.instructions.map((instruction) => (
                   <ListItem sx={{ fontSize: "12px" }}>{instruction}</ListItem>
                 ))}
               </List>

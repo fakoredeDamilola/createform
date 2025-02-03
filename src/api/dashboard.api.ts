@@ -12,6 +12,7 @@ const getUserInfo = async () => {
 };
 
 const deleteQuestionApi = async (questionId: string, formId: string) => {
+  console.log({ questionId, formId });
   await axiosClient.delete(`/form/delete/question/${questionId}/${formId}`);
 };
 
@@ -33,6 +34,7 @@ const getFormById = async (_id: string) => {
 };
 
 const getResponseById = async (_id: string) => {
+  console.log(_id);
   const response = await axiosClient.get(`/response/get/${_id}`);
 
   return response;
@@ -53,6 +55,7 @@ const getFormBySlug = async (slug: string, includeAnswer?: boolean) => {
 };
 
 const updateFormSettingDetails = async (newForm: IForm) => {
+  console.log({ newForm });
   const response = await axiosClient.put("/form/update", newForm);
   return response.data;
 };
@@ -83,20 +86,24 @@ const updateFormInsightApi = async ({
 
 const createResponseApi = async ({
   responseId,
+  encryptionArray,
   answers,
   formId,
   formSlug,
   timeStarted,
   responseType,
+  encryptionDetails,
 }: {
   responseId?: string;
   answers: IAnswer[];
   formId: string;
   formSlug: string;
+  encryptionArray?: string[];
   timeStarted: number | null;
   responseType: ResponseType;
+  encryptionDetails?: { [key: string]: string };
 }) => {
-  let diff, noOfQuestionsAnswered;
+  let diff, noOfQuestionsAnswered, encryptionDetailsObj;
   if (timeStarted) {
     const currentTime = new Date();
     diff = (currentTime.getTime() - timeStarted) / 1000;
@@ -106,9 +113,20 @@ const createResponseApi = async ({
     noOfQuestionsAnswered = answers.filter(
       (answer) => answer.answeredQuestion === true
     )?.length;
+    if (encryptionArray) {
+      const encryptionDetails = encryptionArray.reduce(
+        (acc: { [key: string]: string }, obj: string) => {
+          acc[obj] = "";
+          return acc;
+        },
+        {}
+      );
+      encryptionDetailsObj = encryptionDetails;
+    }
   } else {
     diff = timeStarted;
     noOfQuestionsAnswered = 1;
+    encryptionDetailsObj = encryptionDetails;
   }
 
   const answerResponse: {
@@ -121,6 +139,7 @@ const createResponseApi = async ({
     answers: IAnswer[];
     responseId?: string;
     responseType: string;
+    encryptionDetails?: { [key: string]: string };
   } = {
     encryptionType: EncryptionType.NONE,
     submissionDate: new Date(),
@@ -130,16 +149,47 @@ const createResponseApi = async ({
     formSlug,
     answers,
     responseType,
+    encryptionDetails: encryptionDetailsObj,
   };
   if (responseId) {
     answerResponse.responseId = responseId;
   }
+  console.log({ answerResponse });
   const response = await axiosClient.post("/response/create", answerResponse);
 
   if (responseType === ResponseType.CREATE) {
     await axiosClient.put(`/form/update/insight/${formId}`, { submitted: 1 });
   }
   return { data: response.data, responseType };
+};
+
+const updateAnswerInResponseApi = async ({
+  responseId,
+  answer,
+  formId,
+  popQuiz,
+  responseSubmitted,
+}: {
+  responseId: string;
+  answer: IAnswer;
+  formId: string;
+  popQuiz?: boolean;
+  responseSubmitted?: boolean;
+}) => {
+  const answerResponse = {
+    responseId,
+    answer,
+    formId,
+    popQuiz: popQuiz ?? false,
+    responseSubmitted: responseSubmitted ?? false,
+  };
+  console.log({ answerResponse }, "EIEIIE");
+  const response = await axiosClient.post(
+    "/response/update/answer",
+    answerResponse
+  );
+  console.log({ response });
+  return response;
 };
 
 export {
@@ -155,4 +205,5 @@ export {
   deleteQuestionApi,
   createNewQuestionApi,
   getFormAndResponseById,
+  updateAnswerInResponseApi,
 };

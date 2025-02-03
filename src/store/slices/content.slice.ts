@@ -1,8 +1,8 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { IForm } from "../../interfaces/IForm";
 import { IAnswer } from "../../interfaces/IAnswer";
-import { getResponseArrayFromForm } from "../../utils/functions";
 import { IResponseDetail } from "../../interfaces/IResponseDetail";
+import { FormItemType, FormStaticType } from "../../utils/constants";
 
 interface ContentState {
   form: IForm;
@@ -11,7 +11,10 @@ interface ContentState {
   answers: IAnswer[];
   numberIndex: number;
   startResponding: boolean;
+  disableNextButton: boolean;
   timeStarted: null | number;
+  contentCurrentPage: null | string;
+  contentCurrentStaticPage: null | string;
 }
 
 const initialState: ContentState = {
@@ -21,21 +24,43 @@ const initialState: ContentState = {
   answers: [] as IAnswer[],
   numberIndex: 0,
   startResponding: false,
+  disableNextButton: false,
   timeStarted: null,
+  contentCurrentPage: "",
+  contentCurrentStaticPage: "",
 };
 
 const contentSlice = createSlice({
   name: "content",
   initialState,
   reducers: {
-    getFormDetails: (state, action: PayloadAction<{ form: IForm }>) => {
-      const responseArray = getResponseArrayFromForm(
-        action.payload.form.questions
-      );
-      state.form = action.payload.form;
+    getFormDetails: (
+      state,
+      action: PayloadAction<{ form: IForm; answers: IAnswer[] }>
+    ) => {
+      const { form, answers } = action.payload;
+      state.form = form;
       state.formViewingMode = false;
-      state.answers = responseArray;
+      state.answers = answers;
       state.numberIndex = 0;
+      if (form.formSettings.popQuiz) {
+        state.disableNextButton = true;
+      }
+      if (form.formStartPage.pageTitle) {
+        state.contentCurrentStaticPage = FormStaticType.START;
+        state.contentCurrentPage = FormItemType.STATIC;
+      } else {
+        state.contentCurrentPage = FormItemType.QUESTION;
+        state.contentCurrentStaticPage = "";
+      }
+    },
+    changeCurrentContentPage: (
+      state,
+      action: PayloadAction<{ itemType?: string; staticType?: string }>
+    ) => {
+      const { itemType, staticType } = action.payload;
+      if (itemType) state.contentCurrentPage = itemType;
+      if (staticType) state.contentCurrentStaticPage = staticType;
     },
     getResponseDetails: (
       state,
@@ -75,6 +100,9 @@ const contentSlice = createSlice({
             }
           : answer
       );
+      if (state.form.formSettings.popQuiz) {
+        state.disableNextButton = false;
+      }
     },
     updateTimeLeft: (
       state,
@@ -88,6 +116,7 @@ const contentSlice = createSlice({
         state.answers[findAnswerIndex].timeLeft = timeLeft;
       }
     },
+
     setStartResponding: (state) => {
       if (!state.startResponding) {
         state.startResponding = true;
@@ -110,6 +139,9 @@ const contentSlice = createSlice({
       state.answers = state.answers.map((answer, i) =>
         i === index ? { ...answer, optionId, answeredQuestion: true } : answer
       );
+      if (state.form.formSettings.popQuiz) {
+        state.disableNextButton = false;
+      }
     },
     updateAnswersArray: (
       state,
@@ -139,5 +171,6 @@ export const {
   updateAnswersArray,
   setFormViewingMode,
   updateResponseDetails,
+  changeCurrentContentPage,
 } = contentSlice.actions;
 export default contentSlice.reducer;

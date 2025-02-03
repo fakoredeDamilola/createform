@@ -3,6 +3,7 @@ import { IQuestionAnswer } from "../../interfaces/IQuestionAnswer";
 import { Box, Button, Stack, Typography } from "@mui/material";
 import { colors } from "../../styles/colors";
 import { IQuestion } from "../../interfaces/IQuestion";
+import { QuestionType } from "../../utils/constants";
 
 const AnswerBox = ({
   answer,
@@ -29,16 +30,27 @@ const AnswerBox = ({
           <Typography color={colors.secondaryColor} mt="2px">
             The correct answer is{" "}
           </Typography>{" "}
-          {answer?.answerResults.map((result) => {
-            const textAnswer = question.options?.find(
-              (opt) => opt.optionId === result
-            );
-            return (
-              <Typography fontSize="18px" marginLeft="5px" color={colors.white}>
-                {textAnswer?.optionText}
-              </Typography>
-            );
-          })}
+          {question.questionType === QuestionType.multiple_choice ? (
+            answer?.answerResults.map((result) => {
+              const textAnswer = question.options?.find(
+                (opt) => opt.optionId === result
+              );
+              return (
+                <Typography
+                  fontSize="18px"
+                  marginLeft="5px"
+                  color={colors.white}
+                >
+                  {textAnswer?.optionText}
+                </Typography>
+              );
+            })
+          ) : question.questionType === QuestionType.short_text ||
+            question.questionType === QuestionType.long_text ? (
+            <Typography fontSize="18px" marginLeft="5px" color={colors.white}>
+              {answer?.answerResults[0]}
+            </Typography>
+          ) : null}
         </Stack>
       </Box>
       <Button

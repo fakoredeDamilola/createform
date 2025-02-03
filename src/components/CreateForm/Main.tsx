@@ -98,6 +98,7 @@ const Main = () => {
       />
       {selectedQuestion.formItemType === FormItemType.QUESTION ? (
         <CreateQuestionSheet
+          form={form}
           selectedQuestion={selectedQuestion as IQuestion}
           addAnswerToQuestion={form.formSettings.addAnswerToQuestion}
           updateQuestionDetails={updateQuestionDetails}

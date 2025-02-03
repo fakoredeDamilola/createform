@@ -24,6 +24,7 @@ export interface IForm {
   publish?: boolean;
   slug: string;
   encryptionDetails: string[];
+  instructions: string[];
   totalFormTimeLimit?: number;
   formResponseInsights: IFormInsight;
   formStartPage: IStaticPage;

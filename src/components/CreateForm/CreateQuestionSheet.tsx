@@ -1,11 +1,15 @@
 import { Box, Stack, Typography } from "@mui/material";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { ArrowRightAltOutlined } from "@mui/icons-material";
 import AutoGrowingTextArea from "../AutoGrowingTextArea";
 import { IQuestion } from "../../interfaces/IQuestion";
 import { QuestionType } from "../../utils/constants";
 import CreateQuestionOptions from "./CreateQuestionOptions";
 import ContentSheet from "./custom/ContentSheet";
+import { useDispatch } from "react-redux";
+import { createOrUpdateQuestionAnswer } from "../../store/slices/form.slice";
+import { IForm } from "../../interfaces/IForm";
+import useDebounce from "../../hooks/useDebounce";
 
 const CreateQuestionSheet = ({
   selectedQuestion,
@@ -15,7 +19,9 @@ const CreateQuestionSheet = ({
   updateQuestionDetails,
   debouncedQuestionText,
   setDebouncedQuestionText,
+  form,
 }: {
+  form: IForm;
   selectedQuestion: IQuestion;
   addAnswerToQuestion: boolean;
   setQuestionDescription: React.Dispatch<React.SetStateAction<string>>;
@@ -24,6 +30,42 @@ const CreateQuestionSheet = ({
   debouncedQuestionText: string;
   setDebouncedQuestionText: React.Dispatch<React.SetStateAction<string>>;
 }) => {
+  const [debouncedAnswerInputText, setDebouncedAnswerInputText] = useState("");
+  const debouncedAnswerInput = useDebounce(debouncedAnswerInputText, 500);
+
+  const dispatch = useDispatch();
+
+  const addTextAsAnswer = (text: string) => {
+    console.log({ text });
+    if (selectedQuestion._id) {
+      dispatch(
+        createOrUpdateQuestionAnswer({
+          questionAnswer: text,
+          questionId: selectedQuestion._id,
+          questionType: selectedQuestion.questionType,
+          formId: form._id,
+        })
+      );
+    }
+  };
+
+  useEffect(() => {
+    if (debouncedAnswerInput !== "") {
+      addTextAsAnswer(debouncedAnswerInput);
+    }
+  }, [debouncedAnswerInput, dispatch]);
+
+  useEffect(() => {
+    console.log({ selectedQuestion });
+    if (selectedQuestion.correctAnswer?.answerResults) {
+      setDebouncedAnswerInputText(
+        selectedQuestion.correctAnswer?.answerResults[0]
+      );
+    } else {
+      setDebouncedAnswerInputText("");
+    }
+  }, [selectedQuestion]);
+
   return (
     <ContentSheet>
       <Stack direction="row" width="100%">
@@ -75,10 +117,14 @@ const CreateQuestionSheet = ({
                       width: "100%",
                       border: "1px solid",
                       padding: "0 10px",
-                      height: "40px",
-                      borderRadius: "8px",
+                      height: "30px",
+                      borderRadius: "4px",
                       backgroundColor: "transparent",
                     }}
+                    value={debouncedAnswerInputText}
+                    onChange={(e) =>
+                      setDebouncedAnswerInputText(e.target.value)
+                    }
                   />
                 </Box>
               )}
