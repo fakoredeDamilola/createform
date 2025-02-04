@@ -14,7 +14,7 @@ const ContentStaticPage = ({
   response: IResponseDetail;
   updateEncryptionDetails: (inputValues: { [key: string]: string }) => void;
 }) => {
-  console.log({ form }, "uoowowo");
+  console.log({ form, response }, "uoowowo");
 
   if (contentCurrentStaticPage === FormStaticType.START) {
     return (

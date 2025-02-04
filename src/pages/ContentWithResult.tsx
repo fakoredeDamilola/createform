@@ -18,6 +18,8 @@ import Spinner from "../components/Spinner";
 import { getFormAndResponseById } from "../api/dashboard.api";
 import { colors } from "../styles/colors";
 import { formatDate } from "../utils/functions";
+import { QuestionType } from "../utils/constants";
+import AnswerBox from "../components/content/AnswerBox";
 
 const ContentWithResult = () => {
   const dispatch = useDispatch();
@@ -27,8 +29,7 @@ const ContentWithResult = () => {
   const { form, numberIndex, response } = useSelector(
     (state: RootState) => state.content
   );
-
-  const answers = response.answers;
+  console.log({ response });
 
   const [currentIndex, setCurrentIndex] = useState(numberIndex);
   const [isExiting, setIsExiting] = useState(false);
@@ -101,9 +102,9 @@ const ContentWithResult = () => {
           textAlign="center"
           color={colors.mistBlue}
         >
-          Here is the form you submitted at {formatDate(response.updatedAt)}
+          Here is the form you submitted at {formatDate(response?.updatedAt)}
         </Typography>
-        {questions && answers && (
+        {questions && response?.answers && (
           <CSSTransition
             in={!isExiting}
             timeout={timeout}
@@ -129,12 +130,22 @@ const ContentWithResult = () => {
                   >
                     <ContentQuestion
                       question={questions[currentIndex]}
-                      answer={answers[currentIndex]}
+                      answer={response.answers[currentIndex]}
                       correctAnswer={questions[currentIndex]?.correctAnswer}
                       setErrorBox={null}
                       onTimeUp={onTimeUp}
                     >
-                      <></>
+                      {(questions[currentIndex].questionType ===
+                        QuestionType.long_text ||
+                        questions[currentIndex].questionType ===
+                          QuestionType.short_text) && (
+                        <AnswerBox
+                          answer={questions[currentIndex]?.correctAnswer}
+                          moveToNextQuestion={() => {}}
+                          question={questions && questions[currentIndex]}
+                          dontShowNextButton={true}
+                        />
+                      )}
                     </ContentQuestion>
                   </Stack>
                 </Stack>

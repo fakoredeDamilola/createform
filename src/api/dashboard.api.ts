@@ -114,6 +114,7 @@ const createResponseApi = async ({
       (answer) => answer.answeredQuestion === true
     )?.length;
     if (encryptionArray) {
+      console.log({ encryptionArray });
       const encryptionDetails = encryptionArray.reduce(
         (acc: { [key: string]: string }, obj: string) => {
           acc[obj] = "";
