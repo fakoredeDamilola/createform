@@ -84,7 +84,7 @@ const QuestionOption = ({
         <AutoGrowingTextArea
           fontSize="14px"
           placeholder=""
-          noBgColor={true}
+          bgColor="transparent"
           value={questionOptionValue}
           setValue={(value) => {
             setQuestionOptionValue(value);

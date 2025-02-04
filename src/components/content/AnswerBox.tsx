@@ -9,10 +9,12 @@ const AnswerBox = ({
   answer,
   moveToNextQuestion,
   question,
+  dontShowNextButton,
 }: {
   answer: IQuestionAnswer | null;
   moveToNextQuestion: () => void;
   question: IQuestion;
+  dontShowNextButton?: boolean;
 }) => {
   return (
     <Box
@@ -53,19 +55,21 @@ const AnswerBox = ({
           ) : null}
         </Stack>
       </Box>
-      <Button
-        fullWidth
-        variant="contained"
-        onClick={moveToNextQuestion}
-        sx={{
-          my: "15px",
-          bgcolor: colors.white,
-          color: colors.bgOptionText,
-          fontSize: "20px",
-        }}
-      >
-        OK
-      </Button>
+      {!dontShowNextButton && (
+        <Button
+          fullWidth
+          variant="contained"
+          onClick={moveToNextQuestion}
+          sx={{
+            my: "15px",
+            bgcolor: colors.white,
+            color: colors.bgOptionText,
+            fontSize: "20px",
+          }}
+        >
+          OK
+        </Button>
+      )}
     </Box>
   );
 };

@@ -82,6 +82,14 @@ const ContentQuestion = ({
     }
   };
 
+  const correctAnswerText =
+    formViewingMode &&
+    correctAnswer?.answerResults[0].toLowerCase() ===
+      answer.textResponse?.toLowerCase()
+      ? true
+      : false;
+  console.log({ formViewingMode });
+
   return (
     <Box>
       <Stack direction="row" gap={isMobile ? "5px" : "20px"}>
@@ -120,6 +128,13 @@ const ContentQuestion = ({
             question.questionType === QuestionType.long_text) && (
             <Box width="100%" mt="40px">
               <AutoGrowingTextArea
+                bgColor={
+                  correctAnswerText
+                    ? colors.selectedCorrectOptionBackground
+                    : formViewingMode === true
+                    ? colors.selectedWrongOptionBackground
+                    : "transparent"
+                }
                 fontSize="22px"
                 characterLimit={question.maxCharacters}
                 placeholder="Type Your Answer here..."
