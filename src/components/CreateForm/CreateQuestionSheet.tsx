@@ -1,4 +1,4 @@
-import { Box, Stack, Typography } from "@mui/material";
+import { Box, Button, Input, Stack, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { ArrowRightAltOutlined } from "@mui/icons-material";
 import AutoGrowingTextArea from "../AutoGrowingTextArea";
@@ -7,9 +7,16 @@ import { QuestionType } from "../../utils/constants";
 import CreateQuestionOptions from "./CreateQuestionOptions";
 import ContentSheet from "./custom/ContentSheet";
 import { useDispatch } from "react-redux";
-import { createOrUpdateQuestionAnswer } from "../../store/slices/form.slice";
+import {
+  addNewOptionsValue,
+  createOrUpdateQuestionAnswer,
+  removeOptionsValue,
+  selectOptionAsNextAnswer,
+} from "../../store/slices/form.slice";
 import { IForm } from "../../interfaces/IForm";
 import useDebounce from "../../hooks/useDebounce";
+import ActionTab from "./custom/ActionTab";
+import { IOption } from "../../interfaces/IOption";
 
 const CreateQuestionSheet = ({
   selectedQuestion,
@@ -31,10 +38,11 @@ const CreateQuestionSheet = ({
   setDebouncedQuestionText: React.Dispatch<React.SetStateAction<string>>;
 }) => {
   const [debouncedAnswerInputText, setDebouncedAnswerInputText] = useState("");
+  const [inputOptionText, setInputOptionText] = useState("");
   const debouncedAnswerInput = useDebounce(debouncedAnswerInputText, 500);
 
   const dispatch = useDispatch();
-
+  console.log({ selectedQuestion });
   const addTextAsAnswer = (text: string) => {
     console.log({ text });
     if (selectedQuestion._id) {
@@ -44,6 +52,37 @@ const CreateQuestionSheet = ({
           questionId: selectedQuestion._id,
           questionType: selectedQuestion.questionType,
           formId: form._id,
+        })
+      );
+    }
+  };
+
+  const submitInputOptionText = () => {
+    if (inputOptionText && selectedQuestion._id) {
+      dispatch(
+        addNewOptionsValue({
+          optionText: inputOptionText,
+          questionId: selectedQuestion._id,
+        })
+      );
+      setInputOptionText("");
+    }
+  };
+
+  const selectOptionAsAnswer = (optionId: string) => {
+    if (selectedQuestion._id) {
+      dispatch(
+        selectOptionAsNextAnswer({ questionId: selectedQuestion._id, optionId })
+      );
+    }
+  };
+
+  const removeFromOptionList = (option: IOption) => {
+    if (selectedQuestion._id) {
+      dispatch(
+        removeOptionsValue({
+          optionId: option.optionId,
+          questionId: selectedQuestion._id,
         })
       );
     }
@@ -135,6 +174,51 @@ const CreateQuestionSheet = ({
               _id={selectedQuestion._id ?? ""}
               questionType={selectedQuestion.questionType}
             />
+          ) : selectedQuestion?.questionType === QuestionType.fill_the_gap ? (
+            <Box>
+              <Typography sx={{ cursor: "pointer", fontSize: "12px" }}>
+                To add a dash at any point, use four underscore (____)
+              </Typography>
+              {form.formSettings.addAnswerToQuestion && (
+                <Typography
+                  sx={{ cursor: "pointer", fontSize: "12px", mt: "6px" }}
+                >
+                  You need to select the answers to the gaps, select them in
+                  accordance to the gap
+                </Typography>
+              )}
+              <Stack flexDirection="row" gap="10px" mt="10px" flexWrap="wrap">
+                {selectedQuestion.options &&
+                  selectedQuestion.options.map((option) => (
+                    <ActionTab
+                      text={option.optionText}
+                      key={option.optionId}
+                      onClick={() => removeFromOptionList(option)}
+                      selectedOption={option.optionPosition}
+                      showSelectOption={form.formSettings.addAnswerToQuestion}
+                      selectOptionAsAnswer={() =>
+                        selectOptionAsAnswer(option.optionId)
+                      }
+                    />
+                  ))}
+              </Stack>
+              <Stack direction="row" mt="20px" gap="5px">
+                <Input
+                  sx={{ width: "100%", my: "10px" }}
+                  value={inputOptionText}
+                  onChange={(e) => setInputOptionText(e.target.value)}
+                  placeholder="Enter a option"
+                  name="option"
+                />
+                <Button
+                  onClick={submitInputOptionText}
+                  variant="contained"
+                  sx={{ height: "30px", mt: "10px" }}
+                >
+                  submit
+                </Button>
+              </Stack>
+            </Box>
           ) : null}
         </Box>
       </Stack>

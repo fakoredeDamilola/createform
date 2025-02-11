@@ -136,11 +136,35 @@ const contentSlice = createSlice({
     ) => {
       const { optionId } = action.payload;
       const index = state.numberIndex;
-      state.answers = state.answers.map((answer, i) =>
-        i === index ? { ...answer, optionId, answeredQuestion: true } : answer
-      );
+      // state.answers = state.answers.map((answer, i) =>
+      //   i === index ? { ...answer, optionId, answeredQuestion: true } : answer
+      // );
+      state.answers[index] = {
+        ...state.answers[index],
+        optionId,
+        answeredQuestion: true,
+      };
       if (state.form.formSettings.popQuiz) {
         state.disableNextButton = false;
+      }
+    },
+    setOptionToFillGap: (
+      state,
+      action: PayloadAction<{
+        optionId: string;
+      }>
+    ) => {
+      const { optionId } = action.payload;
+      const index = state.numberIndex;
+      const options = state.form.questions[index].options;
+
+      const optionIndex = options?.findIndex(
+        (opt) => opt.optionId === optionId
+      );
+      if (optionIndex && options) {
+        const option = options?.splice(optionIndex, 1);
+        console.log({ option });
+        state.answers[index].optionIds?.push(optionId);
       }
     },
     updateAnswersArray: (
@@ -172,5 +196,6 @@ export const {
   setFormViewingMode,
   updateResponseDetails,
   changeCurrentContentPage,
+  setOptionToFillGap,
 } = contentSlice.actions;
 export default contentSlice.reducer;

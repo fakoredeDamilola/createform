@@ -38,11 +38,11 @@ const DashboardHeader = () => {
     mutationFn: (newForm: IForm & { publish: boolean }) =>
       updateFormSettingDetails(newForm),
     onSuccess: (data) => {
-      alert("success");
+      // alert("success");
       // console.log("Item created successfully:", data);
     },
     onError: (error) => {
-      alert("error");
+      // alert("error");
       // console.error("Error creating item:", error);
     },
   });

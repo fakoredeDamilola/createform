@@ -8,6 +8,7 @@ import {
   updateStartPageInstruction,
 } from "../../utils/functions";
 import {
+  fillTheGapId,
   FormStaticType,
   OptionLabel,
   QuestionType,
@@ -89,6 +90,10 @@ const formSlice = createSlice({
         if (instructions.length > 0) {
           state.form.formStartPage.instructions = instructions;
         }
+        if (formSettings.showStartPage) {
+          state.form.formStartPage.showPage = true;
+          state.form.formStartPage.pageTitle = "Welcome";
+        }
       }
     },
 
@@ -131,15 +136,50 @@ const formSlice = createSlice({
         state.selectedQuestion = findQuestion;
       }
     },
+
     updateQuestionInfo: (
       state,
       action: PayloadAction<{
         questionId: string;
         key: string;
         value: string | boolean;
+        dashPositions: { start: number; stop: number }[];
       }>
     ) => {
-      const { questionId, key, value } = action.payload;
+      const { questionId, key, value, dashPositions } = action.payload;
+      console.log({ dashPositions });
+      const form = state.form;
+      const findQuestion = form?.questions.find(
+        (question) => question.questionId === questionId
+      );
+
+      if (findQuestion) {
+        if (key === "questionText" && typeof value === "string") {
+          console.log({ value });
+          (findQuestion as unknown as Record<string, string[] | boolean>)[key] =
+            [value];
+          if (dashPositions.length > 0) {
+            findQuestion.dashPositions = dashPositions;
+          }
+        } else {
+          (findQuestion as unknown as Record<string, string | boolean>)[key] =
+            value;
+        }
+
+        if (key === "timeLimit") {
+          if (typeof value === "boolean") {
+            findQuestion.required = value;
+          }
+        }
+      }
+    },
+    addDashToFillTheGap: (
+      state,
+      action: PayloadAction<{
+        questionId: string;
+      }>
+    ) => {
+      const { questionId } = action.payload;
 
       const form = state.form;
       const findQuestion = form?.questions.find(
@@ -147,12 +187,8 @@ const formSlice = createSlice({
       );
 
       if (findQuestion) {
-        (findQuestion as unknown as Record<string, string | boolean>)[key] =
-          value;
-        if (key === "timeLimit") {
-          if (typeof value === "boolean") {
-            findQuestion.required = value;
-          }
+        if (findQuestion.questionType === QuestionType.fill_the_gap) {
+          findQuestion.questionText.push(fillTheGapId);
         }
       }
     },
@@ -300,6 +336,73 @@ const formSlice = createSlice({
         }
       }
     },
+    addNewOptionsValue: (
+      state,
+      action: PayloadAction<{ optionText: string; questionId: string }>
+    ) => {
+      const { questionId, optionText } = action.payload;
+
+      const form = state.form;
+      const question = form?.questions.find(
+        (question) => question._id === questionId
+      );
+
+      if (question) {
+        const newOption = createNewOptionSkeleton(1, optionText);
+
+        question.options?.push(newOption);
+        state.selectedQuestion = question;
+      }
+    },
+    removeOptionsValue: (
+      state,
+      action: PayloadAction<{ optionId: string; questionId: string }>
+    ) => {
+      const { questionId, optionId } = action.payload;
+
+      const form = state.form;
+      const question = form?.questions.find(
+        (question) => question._id === questionId
+      );
+      if (question && question.options) {
+        const optionIndex = question.options.findIndex(
+          (option) => option.optionId === optionId
+        );
+        if (optionIndex !== -1) {
+          question.options?.splice(optionIndex, 1);
+
+          state.selectedQuestion = question;
+        }
+      }
+    },
+    selectOptionAsNextAnswer: (
+      state,
+      action: PayloadAction<{ optionId: string; questionId: string }>
+    ) => {
+      const { questionId, optionId } = action.payload;
+
+      const form = state.form;
+      const question = form?.questions.find(
+        (question) => question._id === questionId
+      );
+      if (question && question.options) {
+        const highestPosition = Math.max(
+          0,
+          ...question.options.map((opt) => opt.optionPosition || 0)
+        );
+        const nextAnswerIndex = highestPosition + 1;
+
+        const newOptionSet = question.options.map((opt) => {
+          if (opt.optionId === optionId) {
+            return { ...opt, optionPosition: nextAnswerIndex };
+          }
+          return opt;
+        });
+
+        question.options = newOptionSet;
+        state.selectedQuestion = question;
+      }
+    },
     duplicateQuestion: (
       state,
       action: PayloadAction<{
@@ -408,5 +511,9 @@ export const {
   createNewFormEncryption,
   removeValueFromEncryption,
   updateStaticPageInfo,
+  addDashToFillTheGap,
+  addNewOptionsValue,
+  removeOptionsValue,
+  selectOptionAsNextAnswer,
 } = formSlice.actions;
 export default formSlice.reducer;

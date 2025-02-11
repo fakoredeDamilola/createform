@@ -77,7 +77,7 @@ const Content = () => {
     },
   });
 
-  const { data: responseData, mutate } = useMutation({
+  const { mutate } = useMutation({
     mutationFn: createResponseApi,
     onSuccess: (data) => {
       console.log("Answer updated", data);

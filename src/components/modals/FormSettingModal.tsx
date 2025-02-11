@@ -46,6 +46,7 @@ const FormSettingModal: React.FC<FormSettingModalProps> = ({
     addAnswerToQuestion: false,
     addTimeLimitToForm: false,
     popQuiz: false,
+    showStartPage: false,
   });
 
   useEffect(() => {
@@ -163,6 +164,10 @@ const FormSettingModal: React.FC<FormSettingModalProps> = ({
                 {
                   key: "popQuiz",
                   text: "Make it a Pop Quiz",
+                },
+                {
+                  key: "showStartPage",
+                  text: "Show a start page ",
                 },
               ].map((item, index) => {
                 return (

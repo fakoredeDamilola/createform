@@ -95,9 +95,9 @@ const QuestionListItem = ({
         <Typography fontSize="18px">{question.questionNumber}</Typography>
       </Stack>
       <Typography overflow="hidden" px="5px" fontSize="12px" maxWidth="60%">
-        {question.questionText?.length > 12
-          ? `${question.questionText?.split("").slice(0, 12).join("")}...`
-          : question.questionText}
+        {question.questionText[0]?.length > 12
+          ? `${question.questionText[0]?.split("").slice(0, 12).join("")}...`
+          : question.questionText[0]}
       </Typography>
       <>
         <Stack

@@ -1,5 +1,6 @@
 import { QuestionType } from "../utils/constants";
 import { GrMultiple } from "react-icons/gr";
+import { RiArticleFill } from "react-icons/ri";
 import { MdOutlineShortText } from "react-icons/md";
 import { BiSolidSelectMultiple } from "react-icons/bi";
 import { PiTextAlignLeftLight } from "react-icons/pi";
@@ -70,6 +71,15 @@ const Icon = ({
       case QuestionType.number:
         return (
           <GoNumber
+            style={{
+              backgroundColor: !withBg ? "transparent" : colors.pastelLavender,
+              ...style,
+            }}
+          />
+        );
+      case QuestionType.fill_the_gap:
+        return (
+          <RiArticleFill
             style={{
               backgroundColor: !withBg ? "transparent" : colors.pastelLavender,
               ...style,

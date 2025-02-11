@@ -113,7 +113,7 @@ const ResponseTable = ({
                     fontSize="25px"
                   />
                   <Typography fontSize="12px" mt="3px">
-                    {question.questionText}
+                    {question.questionText[0]}
                   </Typography>
                 </Stack>
                 <TableDropdown />

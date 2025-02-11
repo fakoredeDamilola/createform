@@ -50,6 +50,7 @@ enum QuestionType {
   email = "Email",
   number = "Number",
   boolean = "Boolean",
+  fill_the_gap = "Fill The Gap",
 }
 
 enum FormItemType {
@@ -85,6 +86,8 @@ enum EncryptionType {
   EMAIL = "Email",
 }
 
+const fillTheGapId = "thisisagapcreatedbetweenquestionsandisunique";
+
 export {
   headerLinks,
   DashboardTabs,
@@ -99,4 +102,5 @@ export {
   ResponseType,
   FormItemType,
   FormStaticType,
+  fillTheGapId,
 };

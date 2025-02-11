@@ -7,4 +7,5 @@ export interface IStaticPage {
   formItemType: FormItemType;
   formStaticType: FormStaticType;
   instructions?: string[];
+  showPage: boolean;
 }

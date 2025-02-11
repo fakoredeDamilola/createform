@@ -17,10 +17,11 @@ export interface IQuestion {
   randomize?: boolean;
   questionDescription: string;
   formId: string;
-  questionText: string;
+  questionText: string[];
   description?: string;
   questionType: QuestionType;
   options?: IOption[];
   correctAnswer: IQuestionAnswer;
   formItemType: FormItemType;
+  dashPositions?: { start: number; stop: number }[];
 }

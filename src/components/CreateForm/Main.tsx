@@ -46,7 +46,7 @@ const Main = () => {
       selectedQuestion &&
       selectedQuestion.formItemType === FormItemType.QUESTION
     ) {
-      setDebouncedQuestionText((selectedQuestion as IQuestion).questionText);
+      setDebouncedQuestionText((selectedQuestion as IQuestion).questionText[0]);
       setQuestionDescription(
         (selectedQuestion as IQuestion).questionDescription
       );
@@ -76,6 +76,15 @@ const Main = () => {
     dispatch(addNewQuestionToForm({ questionInfo: response }));
   };
 
+  const extractDashPositions = (input: string) => {
+    const regex = /-{2,}|_{2,}/g;
+    const matches = [...input.matchAll(regex)];
+    return matches.map((match) => ({
+      start: match.index,
+      stop: match.index + 3,
+    }));
+  };
+
   const updateQuestionDetails = (value: string, key: string) => {
     if (form._id && selectedQuestion?.questionId) {
       dispatch(
@@ -83,6 +92,11 @@ const Main = () => {
           questionId: selectedQuestion?.questionId,
           value,
           key,
+          dashPositions:
+            (selectedQuestion as IQuestion).questionType ===
+            QuestionType.fill_the_gap
+              ? extractDashPositions(value)
+              : [],
         })
       );
     }

@@ -12,6 +12,7 @@ import useDebounce from "../../hooks/useDebounce";
 import { useDispatch } from "react-redux";
 import {
   selectAnswerOption,
+  setOptionToFillGap,
   setStartResponding,
   updateAnswerResponse,
 } from "../../store/slices/content.slice";
@@ -23,6 +24,7 @@ import { RootState } from "../../store/store";
 import theme from "../../styles/theme";
 import ContentTimer from "../../components/content/ContentTimer";
 import { IQuestionAnswer } from "../../interfaces/IQuestionAnswer";
+import QuestionText from "../../components/content/QuestionText";
 
 const ContentQuestion = ({
   question,
@@ -48,6 +50,11 @@ const ContentQuestion = ({
   const { form, formViewingMode } = useSelector(
     (state: RootState) => state.content
   );
+
+  const selectOptionToFillGap = (option: IOption) => {
+    console.log({ option });
+    dispatch(setOptionToFillGap({ optionId: option.optionId }));
+  };
 
   const { mutate } = useMutation({
     mutationFn: updateFormInsightApi,
@@ -120,10 +127,7 @@ const ContentQuestion = ({
           style={{ fontSize: isMobile ? "14px" : "20px", marginTop: "10px" }}
         />
         <Box width="100%">
-          <Typography fontSize={isMobile ? "20px" : "24px"}>
-            {question.questionText}
-            {question.required && "*"}
-          </Typography>
+          <QuestionText question={question} />
           {(question.questionType === QuestionType.short_text ||
             question.questionType === QuestionType.long_text) && (
             <Box width="100%" mt="40px">
@@ -159,11 +163,6 @@ const ContentQuestion = ({
                     ? true
                     : false;
 
-                console.log({
-                  selectedOption,
-                  correctOption,
-                  answer,
-                });
                 return (
                   <Box mt="20px" key={option.optionId}>
                     <QuestionOption
@@ -200,6 +199,39 @@ const ContentQuestion = ({
                 );
               })}
             </Box>
+          )}
+          {question.questionType === QuestionType.fill_the_gap && (
+            <Stack flexDirection="row" gap="15px" my="20px">
+              {question.options?.map((option) => {
+                return (
+                  <Stack
+                    flexDirection="row"
+                    key={option.optionId}
+                    border={`1px solid ${colors.borderTwoText}`}
+                    padding="8px"
+                    borderRadius="8px"
+                    width="fit-content"
+                    gap="5px"
+                    bgcolor="white"
+                    boxShadow="0px 4px 6px rgba(0, 0, 0, 0.1), 0px 1px 3px rgba(0, 0, 0, 0.06)"
+                    sx={{
+                      transition:
+                        "transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out",
+                      cursor: "pointer",
+                      "&:hover": {
+                        transform: "scale(1.05)",
+                        boxShadow: "0px 6px 12px rgba(0, 0, 0, 0.15)",
+                      },
+                    }}
+                    onClick={() => selectOptionToFillGap(option)}
+                  >
+                    <Typography fontSize={isMobile ? "16px" : "20px"}>
+                      {option.optionText}
+                    </Typography>
+                  </Stack>
+                );
+              })}
+            </Stack>
           )}
           <Box mt="20px">{children}</Box>
         </Box>

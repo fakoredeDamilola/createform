@@ -4,6 +4,7 @@ import { IForm } from "../interfaces/IForm";
 import { IQuestion } from "../interfaces/IQuestion";
 import { v4 as uuidv4 } from "uuid";
 import { EncryptionType, ResponseType } from "../utils/constants";
+import { formatFormQuestions } from "../utils/functions";
 
 const getUserInfo = async () => {
   const response = await axiosClient.get("/user/me");
@@ -56,7 +57,12 @@ const getFormBySlug = async (slug: string, includeAnswer?: boolean) => {
 
 const updateFormSettingDetails = async (newForm: IForm) => {
   console.log({ newForm });
-  const response = await axiosClient.put("/form/update", newForm);
+  const formQuestionsFormatted = formatFormQuestions(newForm.questions);
+  console.log({ formQuestionsFormatted });
+  const response = await axiosClient.put("/form/update", {
+    ...newForm,
+    questions: formQuestionsFormatted,
+  });
   return response.data;
 };
 

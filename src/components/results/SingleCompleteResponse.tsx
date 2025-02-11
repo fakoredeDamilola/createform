@@ -213,7 +213,7 @@ const SingleCompleteResponse = ({
                     />
                     <Box>
                       <Typography fontSize="14px">
-                        {question.questionText}
+                        {question.questionText[0]}
                       </Typography>
                       <Typography
                         fontSize="14px"

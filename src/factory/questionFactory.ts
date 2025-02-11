@@ -1,5 +1,6 @@
 import { QuestionType } from "../utils/constants";
 import { BooleanChoice } from "./classes/BooleanChoice";
+import FillTheGap from "./classes/FillTheGap";
 import LongText from "./classes/LongText";
 import MultipleChoice from "./classes/MultipleChoice";
 import MultipleSelection from "./classes/MultipleSelection";
@@ -53,6 +54,15 @@ export class QuestionFactory {
         );
       case QuestionType.boolean:
         return new BooleanChoice(
+          formId,
+          questionType,
+          questionId,
+          questionFormat,
+          questionNumber,
+          []
+        );
+      case QuestionType.fill_the_gap:
+        return new FillTheGap(
           formId,
           questionType,
           questionId,
