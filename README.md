@@ -1,50 +1,80 @@
-# React + TypeScript + Vite
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-Currently, two official plugins are available:
+### **📌 createform Frontend**  
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+This is the **frontend** for a **dynamic form builder** that allows users to create and manage forms with various question types, including:  
 
-## Expanding the ESLint configuration
+✅ Short Text  
+✅ Long Text  
+✅ Fill in the Gap  
+✅ Number  
+✅ Multiple Choice
+✅ Boolean question  
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+**Upcoming Features:**  
+- 🖼️ Image uploads  
+- 🎵 Audio & Video support  
+- 📄 PDF submission  
+- 🔘 More question types  
 
-- Configure the top-level `parserOptions` property like this:
+## **🚀 Tech Stack**  
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+- **React** – Component-based UI  
+- **Material-UI** – UI components  
+- **Styled Components** – Custom styling  
+- **Redux Toolkit** – State management  
+
+## **💻 Getting Started**  
+
+### **1️⃣ Clone the Repository**  
+```sh
+git clone [createform](https://github.com/fakoredeDamilola/createform)
+cd createform
 ```
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
-
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
-
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
+### **2️⃣ Install Dependencies**  
+```sh
+npm install
 ```
+
+### **3️⃣ Start Development Server**  
+```sh
+npm run dev
+```
+
+## **⚙️ Environment Variables**  
+Create a **.env** file in the root directory and configure:  
+```sh
+VITE_GOOGLE_CLIENT_ID=
+VITE_GOOGLE_CLIENT_SECRET=
+VITE_API_BASE_URL="http://localhost:3333"
+```
+
+## **📦 Project Structure**  
+```
+📂 src
+ ┣ 📂 components    # Reusable UI components
+ ┣ 📂 pages         # Main pages of the app
+ ┣ 📂 store         # Redux state management
+ ┣ 📂 styles        # Styled-components global styles
+ ┣ 📂 utils         # Helper functions
+ ┣ App.tsx         # Main app component
+ ┗ index.tsx       # Entry point
+```
+
+## **🔗 API Connection**  
+The frontend interacts with the **NestJS + MongoDB backend** to handle form creation, updates, and submissions.  
+
+## **🎨 UI Customization**  
+The project uses **Material-UI** for prebuilt components and **Styled Components** for custom styling. You can easily modify themes in `styles/theme.ts`.  
+
+## **🤝 Contributing**  
+1. Fork the repo  
+2. Create a new branch (`git checkout -b feature/new-feature`)  
+3. Commit changes (`git commit -m "Added new feature"`)  
+4. Push (`git push origin feature/new-feature`)  
+5. Open a Pull Request  
+
+---
+
+🚀 **Happy Coding!** Let me know if you need modifications! 🎯
