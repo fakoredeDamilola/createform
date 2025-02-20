@@ -11,6 +11,7 @@ import { IAnswer } from "../../interfaces/IAnswer";
 import useDebounce from "../../hooks/useDebounce";
 import { useDispatch } from "react-redux";
 import {
+  returnOptionBackToQuestion,
   selectAnswerOption,
   setOptionToFillGap,
   setStartResponding,
@@ -25,6 +26,7 @@ import theme from "../../styles/theme";
 import ContentTimer from "../../components/content/ContentTimer";
 import { IQuestionAnswer } from "../../interfaces/IQuestionAnswer";
 import QuestionText from "../../components/content/QuestionText";
+import { ContentActionTab } from "./styles";
 
 const ContentQuestion = ({
   question,
@@ -52,7 +54,6 @@ const ContentQuestion = ({
   );
 
   const selectOptionToFillGap = (option: IOption) => {
-    console.log({ option });
     dispatch(setOptionToFillGap({ optionId: option.optionId }));
   };
 
@@ -82,6 +83,10 @@ const ContentQuestion = ({
     updateFormInsight();
   };
 
+  const returnAnswerBackToOption = (option: IOption) => {
+    dispatch(returnOptionBackToQuestion({ option }));
+  };
+
   const updateFormInsight = () => {
     if (form._id) {
       mutate({ formID: form._id, formInsight: { starts: 1 } });
@@ -95,7 +100,6 @@ const ContentQuestion = ({
       answer.textResponse?.toLowerCase()
       ? true
       : false;
-  console.log({ formViewingMode });
 
   return (
     <Box>
@@ -127,7 +131,13 @@ const ContentQuestion = ({
           style={{ fontSize: isMobile ? "14px" : "20px", marginTop: "10px" }}
         />
         <Box width="100%">
-          <QuestionText question={question} />
+          <QuestionText
+            question={question}
+            answer={answer}
+            returnAnswerBackToOption={returnAnswerBackToOption}
+            formViewingMode={formViewingMode}
+            answerResults={correctAnswer?.answerResults}
+          />
           {(question.questionType === QuestionType.short_text ||
             question.questionType === QuestionType.long_text) && (
             <Box width="100%" mt="40px">
@@ -204,31 +214,16 @@ const ContentQuestion = ({
             <Stack flexDirection="row" gap="15px" my="20px">
               {question.options?.map((option) => {
                 return (
-                  <Stack
-                    flexDirection="row"
+                  <ContentActionTab
                     key={option.optionId}
-                    border={`1px solid ${colors.borderTwoText}`}
-                    padding="8px"
-                    borderRadius="8px"
-                    width="fit-content"
-                    gap="5px"
-                    bgcolor="white"
-                    boxShadow="0px 4px 6px rgba(0, 0, 0, 0.1), 0px 1px 3px rgba(0, 0, 0, 0.06)"
-                    sx={{
-                      transition:
-                        "transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out",
-                      cursor: "pointer",
-                      "&:hover": {
-                        transform: "scale(1.05)",
-                        boxShadow: "0px 6px 12px rgba(0, 0, 0, 0.15)",
-                      },
+                    onClick={() => {
+                      selectOptionToFillGap(option);
                     }}
-                    onClick={() => selectOptionToFillGap(option)}
                   >
                     <Typography fontSize={isMobile ? "16px" : "20px"}>
                       {option.optionText}
                     </Typography>
-                  </Stack>
+                  </ContentActionTab>
                 );
               })}
             </Stack>

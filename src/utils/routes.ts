@@ -9,6 +9,8 @@ export const routes = {
   login: "/login",
   signup: "/signup",
   resultPage: "/result/:responseId",
+  solution: "solution",
+  pricing: "pricing",
 };
 
 export const getRoute = (

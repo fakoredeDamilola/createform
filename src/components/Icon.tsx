@@ -2,12 +2,13 @@ import { QuestionType } from "../utils/constants";
 import { GrMultiple } from "react-icons/gr";
 import { RiArticleFill } from "react-icons/ri";
 import { MdOutlineShortText } from "react-icons/md";
-import { BiSolidSelectMultiple } from "react-icons/bi";
+// import { BiSolidSelectMultiple } from "react-icons/bi";
 import { PiTextAlignLeftLight } from "react-icons/pi";
-import { GoNumber } from "react-icons/go";
-import { CiTextAlignJustify } from "react-icons/ci";
-import { AiOutlineMail } from "react-icons/ai";
+// import { GoNumber } from "react-icons/go";
+// import { CiTextAlignJustify } from "react-icons/ci";
+// import { AiOutlineMail } from "react-icons/ai";
 import { VscSymbolBoolean } from "react-icons/vsc";
+import { SiLetsencrypt } from "react-icons/si";
 import { colors } from "../styles/colors";
 import {
   HiOutlineArrowLeftEndOnRectangle,
@@ -50,15 +51,15 @@ const Icon = ({
             }}
           />
         );
-      case QuestionType.multiple_selection:
-        return (
-          <BiSolidSelectMultiple
-            style={{
-              backgroundColor: !withBg ? "transparent" : colors.lightSage,
-              ...style,
-            }}
-          />
-        );
+      // case QuestionType.multiple_selection:
+      //   return (
+      //     <BiSolidSelectMultiple
+      //       style={{
+      //         backgroundColor: !withBg ? "transparent" : colors.lightSage,
+      //         ...style,
+      //       }}
+      //     />
+      //   );
       case QuestionType.long_text:
         return (
           <PiTextAlignLeftLight
@@ -68,15 +69,15 @@ const Icon = ({
             }}
           />
         );
-      case QuestionType.number:
-        return (
-          <GoNumber
-            style={{
-              backgroundColor: !withBg ? "transparent" : colors.pastelLavender,
-              ...style,
-            }}
-          />
-        );
+      // case QuestionType.number:
+      //   return (
+      //     <GoNumber
+      //       style={{
+      //         backgroundColor: !withBg ? "transparent" : colors.pastelLavender,
+      //         ...style,
+      //       }}
+      //     />
+      //   );
       case QuestionType.fill_the_gap:
         return (
           <RiArticleFill
@@ -86,24 +87,24 @@ const Icon = ({
             }}
           />
         );
-      case QuestionType.statement:
-        return (
-          <CiTextAlignJustify
-            style={{
-              backgroundColor: !withBg ? "transparent" : colors.softMint,
-              ...style,
-            }}
-          />
-        );
-      case QuestionType.email:
-        return (
-          <AiOutlineMail
-            style={{
-              backgroundColor: !withBg ? "transparent" : colors.paleMauve,
-              ...style,
-            }}
-          />
-        );
+      // case QuestionType.statement:
+      //   return (
+      //     <CiTextAlignJustify
+      //       style={{
+      //         backgroundColor: !withBg ? "transparent" : colors.softMint,
+      //         ...style,
+      //       }}
+      //     />
+      //   );
+      // case QuestionType.email:
+      //   return (
+      //     <AiOutlineMail
+      //       style={{
+      //         backgroundColor: !withBg ? "transparent" : colors.paleMauve,
+      //         ...style,
+      //       }}
+      //     />
+      //   );
       case QuestionType.boolean:
         return (
           <VscSymbolBoolean
@@ -143,6 +144,15 @@ const Icon = ({
       case "end":
         return (
           <HiOutlineArrowLeftEndOnRectangle
+            style={{
+              backgroundColor: !withBg ? "transparent" : colors.paleMauve,
+              ...style,
+            }}
+          />
+        );
+      case "encryption":
+        return (
+          <SiLetsencrypt
             style={{
               backgroundColor: !withBg ? "transparent" : colors.paleMauve,
               ...style,

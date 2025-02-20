@@ -58,7 +58,7 @@ export const StartButtonStyle = styled.button<{ mobile?: boolean }>`
   }
   &:before {
     content: "";
-    width: ${({ mobile }) => (mobile ? "148px" : "188px")};
+    width: ${({ mobile }) => (mobile ? "146px" : "188px")};
     background-color: transparent;
     border: 1px solid ${colors.primaryColor};
     border-radius: 40px;
@@ -70,7 +70,7 @@ export const StartButtonStyle = styled.button<{ mobile?: boolean }>`
 `;
 export const ScheduleButtonStyle = styled.button<{ mobile?: boolean }>`
   display: flex;
-  gap: ${({ mobile }) => (mobile ? "7px" : "10px")};
+  gap: ${({ mobile }) => (mobile ? "4px" : "10px")};
   background: transparent;
   border: 1px solid ${colors.white};
   transition: all 0.3s;
@@ -88,9 +88,8 @@ export const ScheduleButtonStyle = styled.button<{ mobile?: boolean }>`
   }
 
   & span {
-    font-size: ${({ mobile }) => (mobile ? "12px" : "16px")};
+    font-size: ${({ mobile }) => (mobile ? "11px" : "16px")};
     color: ${colors.white};
-    margin-top: 7px;
   }
 `;
 

@@ -22,8 +22,8 @@ import {
 import { CSSTransition } from "react-transition-group";
 import { useMutation } from "@tanstack/react-query";
 import {
-  createResponseApi,
   updateAnswerInResponseApi,
+  updateEncryptionDetailsApi,
 } from "../../api/dashboard.api";
 import { checkQuestionRule } from "../../utils/functions";
 import theme from "../../styles/theme";
@@ -35,7 +35,7 @@ import ContentTimer from "../../components/content/ContentTimer";
 import SubmitButton from "../../components/content/SubmitButton";
 import { IQuestionAnswer } from "../../interfaces/IQuestionAnswer";
 import AnswerBox from "../../components/content/AnswerBox";
-import { FormItemType, ResponseType } from "../../utils/constants";
+import { FormItemType } from "../../utils/constants";
 import { localStorageService } from "../../factory/classes/LocalStorage";
 import ContentStaticPage from "../../components/content/staticPages/ContentStaticPage";
 
@@ -47,7 +47,6 @@ const Content = () => {
     form,
     numberIndex,
     answers,
-    timeStarted,
     response,
     contentCurrentPage,
     contentCurrentStaticPage,
@@ -66,26 +65,14 @@ const Content = () => {
     text: "",
   });
 
-  const { data, status, mutateAsync } = useMutation({
+  const { status, mutateAsync } = useMutation({
     mutationFn: updateAnswerInResponseApi,
-    onSuccess: (data) => {
-      const correctAnswer = data?.data.correctAnswer;
-      setCorrectAnswer(correctAnswer);
-    },
-    onError: (error) => {
-      // console.error("Error creating item:", error);
-    },
   });
 
-  const { mutate } = useMutation({
-    mutationFn: createResponseApi,
+  const { mutate: updateEncryption } = useMutation({
+    mutationFn: updateEncryptionDetailsApi,
     onSuccess: (data) => {
-      console.log("Answer updated", data);
-
-      dispatch(updateResponseDetails({ response: data.data.response }));
-    },
-    onError: (error) => {
-      // console.error("Error creating item:", error);
+      dispatch(updateResponseDetails({ response: data.data }));
     },
   });
 
@@ -101,15 +88,13 @@ const Content = () => {
   const timeout = 300;
 
   const updateAnswerInResponse = async (
-    popQuiz?: boolean,
-    responseSubmitted?: boolean,
-    ans?: IAnswer
+    popQuiz: boolean = false,
+    responseSubmitted: boolean = false
   ) => {
     const answer = answers[currentIndex];
-    console.log({ answer });
-    await mutateAsync({
+    return await mutateAsync({
       responseId: response._id,
-      answer: ans ? ans : answer,
+      answer,
       formId: form._id,
       popQuiz,
       responseSubmitted,
@@ -187,26 +172,22 @@ const Content = () => {
   };
 
   const submitPopQuiz = async () => {
-    console.log();
-    await updateAnswerInResponse(true);
-    console.log({ data });
-    const correctAnswer = data?.data.correctAnswer;
-    console.log({ correctAnswer });
+    const response = await updateAnswerInResponse(true);
+
+    const correctAnswer = response?.data.correctAnswer;
     if (correctAnswer) {
+      setCorrectAnswer(correctAnswer);
       updateAnswersArray({ correctAnswer });
       dispatch(setFormViewingMode(true));
       setShowAnswerDetails(true);
     }
   };
 
-  const updateEncryptionDetails = (inputValues: { [key: string]: string }) => {
-    mutate({
+  const updateEncryptionDetails = async (inputValues: {
+    [key: string]: string;
+  }) => {
+    await updateEncryption({
       responseId: response._id,
-      answers: [],
-      formId: form._id,
-      formSlug: form.slug,
-      timeStarted,
-      responseType: ResponseType.UPDATE,
       encryptionDetails: inputValues,
     });
     dispatch(changeCurrentContentPage({ itemType: FormItemType.QUESTION }));

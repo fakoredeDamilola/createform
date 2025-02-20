@@ -8,4 +8,5 @@ export interface IFormSetting {
   addTimeLimitToForm: boolean;
   encryption?: boolean;
   showStartPage: boolean;
+  markResponseAfterSubmission: boolean;
 }

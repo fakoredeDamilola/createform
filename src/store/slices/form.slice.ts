@@ -147,7 +147,6 @@ const formSlice = createSlice({
       }>
     ) => {
       const { questionId, key, value, dashPositions } = action.payload;
-      console.log({ dashPositions });
       const form = state.form;
       const findQuestion = form?.questions.find(
         (question) => question.questionId === questionId
@@ -155,7 +154,6 @@ const formSlice = createSlice({
 
       if (findQuestion) {
         if (key === "questionText" && typeof value === "string") {
-          console.log({ value });
           (findQuestion as unknown as Record<string, string[] | boolean>)[key] =
             [value];
           if (dashPositions.length > 0) {
@@ -386,20 +384,18 @@ const formSlice = createSlice({
         (question) => question._id === questionId
       );
       if (question && question.options) {
-        const highestPosition = Math.max(
-          0,
-          ...question.options.map((opt) => opt.optionPosition || 0)
-        );
-        const nextAnswerIndex = highestPosition + 1;
-
-        const newOptionSet = question.options.map((opt) => {
-          if (opt.optionId === optionId) {
-            return { ...opt, optionPosition: nextAnswerIndex };
-          }
-          return opt;
-        });
-
-        question.options = newOptionSet;
+        const checkIfQuestionAnswerExist = question?.correctAnswer;
+        if (checkIfQuestionAnswerExist) {
+          question.correctAnswer.answerResults.push(optionId);
+        } else {
+          const newQuestionAnswer = createNewQuestionAnswer(
+            optionId,
+            form._id,
+            questionId,
+            question.questionType
+          );
+          question.correctAnswer = newQuestionAnswer;
+        }
         state.selectedQuestion = question;
       }
     },
@@ -452,7 +448,6 @@ const formSlice = createSlice({
       const checkIfQuestionAnswerExist = state.form.questions.find(
         (question) => question._id === questionId
       )?.correctAnswer;
-      console.log({ checkIfQuestionAnswerExist });
       const selectedQuestionIndex = state.form.questions.findIndex(
         (question) => question._id === questionId
       );
@@ -470,13 +465,12 @@ const formSlice = createSlice({
       } else {
         if (
           checkIfQuestionAnswerExist.questionType ===
-          QuestionType.multiple_selection
+          QuestionType.multiple_choice
         ) {
           selectedQuestionForAnswer.correctAnswer?.answerResults.push(
             questionAnswer
           );
         } else {
-          console.log("checking");
           selectedQuestionForAnswer.correctAnswer.answerResults = [
             questionAnswer,
           ];

@@ -9,6 +9,7 @@ import { BiDotsHorizontal } from "react-icons/bi";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { IoIosTrash, IoMdPrint } from "react-icons/io";
 import { formatDate } from "../../utils/functions";
+import { QuestionType } from "../../utils/constants";
 
 const SingleCompleteResponse = ({
   form,
@@ -202,31 +203,96 @@ const SingleCompleteResponse = ({
           </Box>
 
           <Box my="25px">
-            {form.questions.map((question, index) => {
-              return (
-                <Box my="20px">
-                  <Stack direction="row" gap="10px" alignItems="center">
-                    <Icon
-                      iconName={question.questionType}
-                      withBg={true}
-                      fontSize="30px"
-                    />
-                    <Box>
-                      <Typography fontSize="14px">
-                        {question.questionText[0]}
-                      </Typography>
-                      <Typography
-                        fontSize="14px"
-                        color={colors.black}
-                        mt="15px"
-                      >
-                        {response.answers[index]?.textResponse}
-                      </Typography>
-                    </Box>
+            {response.encryptionDetails &&
+              Object.keys(response.encryptionDetails).map((encryption) => (
+                <>
+                  <Stack
+                    direction="row"
+                    gap="10px"
+                    alignItems="center"
+                    my="15px"
+                  >
+                    <Icon iconName="encryption" fontSize="30px" withBg={true} />{" "}
+                    <Typography fontSize="14px">{encryption}</Typography>
                   </Stack>
-                </Box>
-              );
-            })}
+                  <Box mt="10px">
+                    <input
+                      style={{
+                        width: "70%",
+                        height: "35px",
+                        padding: "0 5px",
+                        border: `1px solid ${colors.borderTwo}`,
+                        borderRadius: "4px",
+                      }}
+                      value={response.encryptionDetails[encryption]}
+                      disabled
+                    />
+                  </Box>
+                </>
+              ))}
+            <Box my="20px" bgcolor={colors.creamColor} padding="15px 10px">
+              {form.questions.map((question, index) => {
+                const answer = response.answers[index];
+                const optionText =
+                  answer.questionType === QuestionType.multiple_choice &&
+                  question?.options?.find(
+                    (option) => option.optionId === answer.optionId
+                  )?.optionText;
+                return (
+                  <Box
+                    my="20px"
+                    py="10px"
+                    borderBottom={`1px solid ${colors.mistBlue}`}
+                  >
+                    <Stack direction="row" gap="10px" alignItems="center">
+                      <Icon
+                        iconName={question.questionType}
+                        withBg={true}
+                        fontSize="30px"
+                      />
+                      <Box>
+                        <Typography fontSize="14px">
+                          {question.questionType !== QuestionType.fill_the_gap
+                            ? question.questionText[0]
+                            : question.questionText
+                                .map((que) => (que === "" ? "__" : que))
+                                .join(" ")}
+                        </Typography>
+                        <Typography
+                          fontSize="14px"
+                          color={colors.black}
+                          mt="15px"
+                        >
+                          {/* {response.answers[index]?.textResponse} */}
+                          {answer.questionType === QuestionType.long_text ||
+                          answer.questionType === QuestionType.short_text ? (
+                            answer.textResponse
+                          ) : answer.questionType ===
+                            QuestionType.multiple_choice ? (
+                            optionText
+                          ) : answer.questionType ===
+                            QuestionType.fill_the_gap ? (
+                            <Stack flexDirection="row" gap="5px">
+                              {answer.selectedOptions?.map((selected) => (
+                                <Stack
+                                  border={`1px solid ${colors.borderTwoText}`}
+                                  padding="3px"
+                                  borderRadius="5px"
+                                  width="fit-content"
+                                >
+                                  {selected.optionText}
+                                </Stack>
+                              ))}
+                            </Stack>
+                          ) : null}
+                        </Typography>
+                      </Box>
+                    </Stack>
+                  </Box>
+                );
+              })}
+            </Box>
+
             <Box my="20px">
               <Stack direction="row" gap="10px" alignItems="center">
                 <Icon iconName="Hidden" withBg={true} fontSize="30px" />

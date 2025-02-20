@@ -68,8 +68,7 @@ const WorkSpaceUISetting = ({
   };
 
   const handleClose = (index: number) => {
-    const item = dropDownItems.find((item, id) => id === index);
-    console.log({ item });
+    dropDownItems.find((item, id) => id === index);
     setAnchorEl(null);
   };
 

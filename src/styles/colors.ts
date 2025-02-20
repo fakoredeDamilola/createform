@@ -42,4 +42,6 @@ export const colors = {
   coolGray: "#cfcfcf",
   testimonyBg: "rgb(255, 238, 234)",
   signupColor: "rgb(236, 180, 98)",
+  creamColor: "#FFFCD8",
+  disabledColor: "#D3D3D3",
 };

@@ -127,14 +127,18 @@ function splitByDashes(
       result.push(input.slice(lastIndex, start));
     }
     result.push("");
+
     lastIndex = stop + 1;
   });
-  if (lastIndex < input.length) {
+  if (lastIndex <= input.length) {
     result.push(input.slice(lastIndex));
   } else {
     result.push("");
   }
-
+  const spaceCount = result.filter((res) => res === "").length;
+  if (spaceCount > positions.length) {
+    result.pop();
+  }
   return result;
 }
 
@@ -146,7 +150,6 @@ function formatFormQuestions(questions: IQuestion[]) {
           question.questionText[0],
           question.dashPositions
         );
-        console.log({ questionResult });
         return { ...question, questionText: questionResult };
       } else {
         return question;
@@ -177,9 +180,11 @@ function getResponseArrayFromForm(questions: IQuestion[]) {
         questionType: current.questionType,
         questionNumber: current.questionNumber,
         optionId: "",
+        selectedOptions: [],
         textResponse: "",
         disabledResponse: false,
         answeredQuestion: false,
+        correctResponse: false,
       });
     }
     return accumulator;
@@ -245,7 +250,7 @@ function checkQuestionRule(question: IQuestion, answer: IAnswer) {
     question.required &&
     (!answer.textResponse ||
       !answer.optionId ||
-      answer.optionIds?.length === 0 ||
+      answer.selectedOptions?.length === 0 ||
       !answer.disabledResponse)
   ) {
     rule.showBox = true;

@@ -47,6 +47,7 @@ const FormSettingModal: React.FC<FormSettingModalProps> = ({
     addTimeLimitToForm: false,
     popQuiz: false,
     showStartPage: false,
+    markResponseAfterSubmission: false,
   });
 
   useEffect(() => {
@@ -92,7 +93,11 @@ const FormSettingModal: React.FC<FormSettingModalProps> = ({
     <ModalBackdrop open={isOpen}>
       <ModalContent
         width="70%"
-        style={{ backgroundColor: colors.secondaryColor, padding: "30px" }}
+        style={{
+          backgroundColor: colors.secondaryColor,
+          padding: "30px",
+          boxSizing: "border-box",
+        }}
       >
         <Stack
           direction="row"
@@ -104,7 +109,7 @@ const FormSettingModal: React.FC<FormSettingModalProps> = ({
             <Typography fontSize="24px">Form Settings</Typography>
           </Box>
         </Stack>
-        <Stack direction="row" gap="20px">
+        <Stack direction="row" height="100%" gap="20px">
           <Box sx={{ width: "300px" }}>
             <List component="nav">
               <ListItemButton
@@ -117,7 +122,7 @@ const FormSettingModal: React.FC<FormSettingModalProps> = ({
                 selected={selectedIndex === 1}
                 onClick={(event) => handleListItemClick(event, 1)}
               >
-                <ListItemText primary="Drafts" />
+                <ListItemText primary="Display" />
               </ListItemButton>
             </List>
             <Divider />
@@ -141,8 +146,11 @@ const FormSettingModal: React.FC<FormSettingModalProps> = ({
             boxSizing="border-box"
             width="100%"
             padding="20px"
-            minHeight="100%"
-            bgcolor={colors.white}
+            height="80%"
+            sx={{
+              overflowY: "scroll",
+            }}
+            bgcolor={colors.bgOption}
           >
             <Typography fontSize="20px" textAlign="left">
               Display
@@ -168,6 +176,10 @@ const FormSettingModal: React.FC<FormSettingModalProps> = ({
                 {
                   key: "showStartPage",
                   text: "Show a start page ",
+                },
+                {
+                  key: "markResponseAfterSubmission",
+                  text: "Mark Response After Submission",
                 },
               ].map((item, index) => {
                 return (

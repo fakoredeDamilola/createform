@@ -46,7 +46,21 @@ const Main = () => {
       selectedQuestion &&
       selectedQuestion.formItemType === FormItemType.QUESTION
     ) {
-      setDebouncedQuestionText((selectedQuestion as IQuestion).questionText[0]);
+      if (
+        (selectedQuestion as IQuestion).questionType ===
+        QuestionType.fill_the_gap
+      ) {
+        setDebouncedQuestionText(
+          (selectedQuestion as IQuestion).questionText
+            .map((text) => (text === "" ? "____" : text))
+            .join("")
+        );
+      } else {
+        setDebouncedQuestionText(
+          (selectedQuestion as IQuestion).questionText.join("")
+        );
+      }
+
       setQuestionDescription(
         (selectedQuestion as IQuestion).questionDescription
       );

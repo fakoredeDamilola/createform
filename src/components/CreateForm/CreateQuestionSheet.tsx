@@ -42,9 +42,7 @@ const CreateQuestionSheet = ({
   const debouncedAnswerInput = useDebounce(debouncedAnswerInputText, 500);
 
   const dispatch = useDispatch();
-  console.log({ selectedQuestion });
   const addTextAsAnswer = (text: string) => {
-    console.log({ text });
     if (selectedQuestion._id) {
       dispatch(
         createOrUpdateQuestionAnswer({
@@ -95,7 +93,6 @@ const CreateQuestionSheet = ({
   }, [debouncedAnswerInput, dispatch]);
 
   useEffect(() => {
-    console.log({ selectedQuestion });
     if (selectedQuestion.correctAnswer?.answerResults) {
       setDebouncedAnswerInputText(
         selectedQuestion.correctAnswer?.answerResults[0]
@@ -127,16 +124,10 @@ const CreateQuestionSheet = ({
             }}
           />
           {selectedQuestion?.questionType === QuestionType.short_text ||
-          selectedQuestion?.questionType === QuestionType.long_text ||
-          selectedQuestion?.questionType === QuestionType.email ||
-          selectedQuestion?.questionType === QuestionType.number ? (
+          selectedQuestion?.questionType === QuestionType.long_text ? (
             <>
               <input
-                placeholder={
-                  selectedQuestion?.questionType === QuestionType.email
-                    ? "name@example.com"
-                    : "Type your answer here..."
-                }
+                placeholder={"Type your answer here..."}
                 style={{
                   fontSize: "22px",
                   width: "100%",
@@ -189,18 +180,24 @@ const CreateQuestionSheet = ({
               )}
               <Stack flexDirection="row" gap="10px" mt="10px" flexWrap="wrap">
                 {selectedQuestion.options &&
-                  selectedQuestion.options.map((option) => (
-                    <ActionTab
-                      text={option.optionText}
-                      key={option.optionId}
-                      onClick={() => removeFromOptionList(option)}
-                      selectedOption={option.optionPosition}
-                      showSelectOption={form.formSettings.addAnswerToQuestion}
-                      selectOptionAsAnswer={() =>
-                        selectOptionAsAnswer(option.optionId)
-                      }
-                    />
-                  ))}
+                  selectedQuestion.options.map((option) => {
+                    const optionIndex =
+                      selectedQuestion.correctAnswer?.answerResults?.findIndex(
+                        (opt) => option.optionId === opt
+                      );
+                    return (
+                      <ActionTab
+                        text={option.optionText}
+                        key={option.optionId}
+                        onClick={() => removeFromOptionList(option)}
+                        selectedOption={optionIndex == -1 ? 0 : optionIndex + 1}
+                        showSelectOption={form.formSettings.addAnswerToQuestion}
+                        selectOptionAsAnswer={() =>
+                          selectOptionAsAnswer(option.optionId)
+                        }
+                      />
+                    );
+                  })}
               </Stack>
               <Stack direction="row" mt="20px" gap="5px">
                 <Input

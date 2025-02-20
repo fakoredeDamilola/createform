@@ -103,6 +103,7 @@ const Dashboard = () => {
             width="100%"
             boxSizing="border-box"
             borderBottom={`2px solid ${colors.white}`}
+            bgcolor={colors.disabledColor}
           >
             <Stack
               direction="row"
@@ -123,7 +124,11 @@ const Dashboard = () => {
               <Search /> <Typography>Search</Typography>
             </Stack>
           </Box>
-          <Box px="30px" py="16px" sx={{ overflow: "scroll" }}>
+          <Box
+            px="30px"
+            py="16px"
+            sx={{ overflow: "scroll", backgroundColor: colors.disabledColor }}
+          >
             <Stack
               direction="row"
               justifyContent="space-between"
@@ -147,7 +152,7 @@ const Dashboard = () => {
               </Stack>
             </Stack>
             <Box>
-              {["Two workspace"].map((workspace) => (
+              {[].map((workspace) => (
                 <Stack
                   direction="row"
                   justifyContent="space-between"
@@ -176,6 +181,7 @@ const Dashboard = () => {
             width="100%"
             boxSizing="border-box"
             borderTop={`2px solid ${colors.white}`}
+            bgcolor={colors.disabledColor}
           >
             <Typography fontSize="14px">Responses collected</Typography>
             <Box

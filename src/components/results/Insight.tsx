@@ -20,17 +20,19 @@ const Insight = ({
 
   useEffect(() => {
     const { starts, views, submitted } = formResponseInsights;
-    const completionRate = `${Math.floor((submitted / starts) * 100)}%`;
-    setInsightTab([
-      { name: "Views", value: views },
-      { name: "Start", value: starts },
-      { name: "Submissions", value: submitted },
-      { name: "Completion rate", value: completionRate },
-      {
-        name: "Average Time to complete",
-        value: formResponseInsights.averageTimeToFillForm?.toFixed(4) ?? "0",
-      },
-    ]);
+    if (submitted && starts) {
+      const completionRate = Math.floor((submitted / starts) * 100);
+      setInsightTab([
+        { name: "Views", value: views },
+        { name: "Start", value: starts },
+        { name: "Submissions", value: submitted },
+        { name: "Completion rate", value: `${completionRate}%` },
+        {
+          name: "Average Time to complete",
+          value: formResponseInsights.averageTimeToFillForm?.toFixed(4) ?? "0",
+        },
+      ]);
+    }
   }, [formResponseInsights]);
 
   return (

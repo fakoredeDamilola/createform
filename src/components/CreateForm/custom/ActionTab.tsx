@@ -12,7 +12,7 @@ const ActionTab = ({
   text: string;
   onClick: () => void;
   showSelectOption?: boolean;
-  selectedOption?: number;
+  selectedOption: number | 0;
   selectOptionAsAnswer?: () => void;
 }) => {
   return (
@@ -41,7 +41,7 @@ const ActionTab = ({
           }}
           onClick={() => selectOptionAsAnswer && selectOptionAsAnswer()}
         >
-          {selectedOption}
+          {selectedOption > 0 && selectedOption}
         </Stack>
       )}
       <Cancel

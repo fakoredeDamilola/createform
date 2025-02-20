@@ -24,7 +24,6 @@ const ResultPage = () => {
   useEffect(() => {
     if (data?.data) {
       const answers = data?.data.answers;
-
       setTotalAnswerScore(answers.length);
       const questionsCorrect = answers.reduce(
         (acc: number, curr: IAnswer) => (acc += curr.scoreForQuestion ?? 0),

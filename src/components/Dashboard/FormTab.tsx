@@ -34,8 +34,8 @@ const FormTab = ({
           sx={{
             width: "35px",
             height: "35px",
-            backgroundColor: "blue",
-            borderRadius: "10px",
+            backgroundColor: colors.coolGray,
+            borderRadius: "8px",
           }}
         />
         <Typography>{form.formName}</Typography>
