@@ -11,6 +11,7 @@ import {
 } from "../../store/slices/form.slice";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store/store";
+import { QuestionType } from "../../utils/constants";
 
 const QuestionListItem = ({
   question,
@@ -22,12 +23,23 @@ const QuestionListItem = ({
 }) => {
   const dispatch = useDispatch();
   const [showDotsOptions, setShowDotsOptions] = useState(false);
+  const [questionText, setQuestionText] = useState("");
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const { questionId: selectedQuestionId } = useSelector(
     (state: RootState) => state.form.selectedQuestion
   );
 
   useEffect(() => {
+    if (question.questionType === QuestionType.fill_the_gap) {
+      setQuestionText(
+        question.questionText
+          .map((text) => (text === "" ? "____" : text))
+          .join("")
+      );
+    } else {
+      setQuestionText(question.questionText.join(""));
+    }
+
     if (selectedQuestionId === question.questionId) {
       setShowDotsOptions(true);
     } else {
@@ -95,9 +107,9 @@ const QuestionListItem = ({
         <Typography fontSize="18px">{question.questionNumber}</Typography>
       </Stack>
       <Typography overflow="hidden" px="5px" fontSize="12px" maxWidth="60%">
-        {question.questionText?.length > 12
-          ? `${question.questionText?.split("").slice(0, 12).join("")}...`
-          : question.questionText}
+        {questionText.length > 12
+          ? `${questionText?.split("").slice(0, 12).join("")}...`
+          : questionText}
       </Typography>
       <>
         <Stack

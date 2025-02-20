@@ -1,10 +1,11 @@
 import { QuestionType } from "../utils/constants";
+import { IOption } from "./IOption";
 
 export interface IAnswer {
   answerId: string;
   questionId: string;
   timeLeft: number;
-  optionIds?: string[];
+  selectedOptions?: IOption[];
   optionId?: string;
   booleanQuestion?: boolean;
   textResponse?: string;

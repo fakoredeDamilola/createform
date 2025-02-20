@@ -57,8 +57,6 @@ const Login = () => {
         .catch((err) => {
           console.error("Error in backend call:", err);
         });
-    } else {
-      console.log("No credential received");
     }
   };
 

@@ -40,6 +40,7 @@ const StaticScreenSetting = ({
               typeof encryptionDetails === "object" &&
               encryptionDetails.map((text, index) => (
                 <ActionTab
+                  selectedOption={0}
                   text={text}
                   key={index}
                   onClick={() => removeEncryptionFromList(index)}

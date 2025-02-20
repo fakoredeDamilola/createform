@@ -83,7 +83,7 @@ const Header = () => {
             sx={{
               width: "120px",
               height: "50px",
-              borderRadius: "15px",
+              borderRadius: "8px",
             }}
             onClick={() => openModal("login")}
           >
@@ -94,7 +94,7 @@ const Header = () => {
             sx={{
               width: "120px",
               height: "50px",
-              borderRadius: "15px",
+              borderRadius: "8px",
             }}
             onClick={() => openModal("signup")}
           >
@@ -113,7 +113,7 @@ const Header = () => {
           sx={{
             width: "120px",
             height: "50px",
-            borderRadius: "15px",
+            borderRadius: "8px",
           }}
           onClick={() => openModal("login")}
         >
@@ -124,7 +124,7 @@ const Header = () => {
           sx={{
             width: "120px",
             height: "50px",
-            borderRadius: "15px",
+            borderRadius: "8px",
             marginLeft: "20px",
           }}
           onClick={() => openModal("signup")}

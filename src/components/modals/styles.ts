@@ -26,8 +26,9 @@ const ModalContent = styled.div<{ width?: string; height?: string }>`
   max-width: 90%;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
   text-align: center;
-  min-height: ${({ height }) => height ?? "75%"};
+  height: ${({ height }) => height ?? "75%"};
   position: relative;
+  overflow-y: hidden;
 `;
 
 const CloseButton = styled.div`

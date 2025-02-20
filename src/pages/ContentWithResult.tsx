@@ -29,7 +29,6 @@ const ContentWithResult = () => {
   const { form, numberIndex, response } = useSelector(
     (state: RootState) => state.content
   );
-  console.log({ response });
 
   const [currentIndex, setCurrentIndex] = useState(numberIndex);
   const [isExiting, setIsExiting] = useState(false);
@@ -98,7 +97,7 @@ const ContentWithResult = () => {
       <Stack maxWidth="90%" minWidth="90%" height="100%" margin="0 auto">
         <Typography
           fontSize="22px"
-          // mt="40px"
+          pt="10px"
           textAlign="center"
           color={colors.mistBlue}
         >

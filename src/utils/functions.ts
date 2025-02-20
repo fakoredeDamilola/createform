@@ -103,7 +103,7 @@ function getNextEnumValue<T extends Record<string, unknown>>(
 }
 
 function createNewOptionSkeleton(
-  optionLabel: OptionLabel | BooleanLabel,
+  optionLabel: OptionLabel | BooleanLabel | number,
   optionText?: string
 ) {
   const newOption: IOption = {
@@ -113,6 +113,51 @@ function createNewOptionSkeleton(
     selectedOption: false,
   };
   return newOption;
+}
+
+function splitByDashes(
+  input: string,
+  positions: { start: number; stop: number }[]
+): string[] {
+  const result: string[] = [];
+  let lastIndex = 0;
+
+  positions.forEach(({ start, stop }) => {
+    if (start > lastIndex) {
+      result.push(input.slice(lastIndex, start));
+    }
+    result.push("");
+
+    lastIndex = stop + 1;
+  });
+  if (lastIndex <= input.length) {
+    result.push(input.slice(lastIndex));
+  } else {
+    result.push("");
+  }
+  const spaceCount = result.filter((res) => res === "").length;
+  if (spaceCount > positions.length) {
+    result.pop();
+  }
+  return result;
+}
+
+function formatFormQuestions(questions: IQuestion[]) {
+  return questions.map((question) => {
+    if (question.questionType === QuestionType.fill_the_gap) {
+      if (question.dashPositions) {
+        const questionResult = splitByDashes(
+          question.questionText[0],
+          question.dashPositions
+        );
+        return { ...question, questionText: questionResult };
+      } else {
+        return question;
+      }
+    } else {
+      return question;
+    }
+  });
 }
 
 function renumberQuestions(questions: IQuestion[]) {
@@ -135,9 +180,11 @@ function getResponseArrayFromForm(questions: IQuestion[]) {
         questionType: current.questionType,
         questionNumber: current.questionNumber,
         optionId: "",
+        selectedOptions: [],
         textResponse: "",
         disabledResponse: false,
         answeredQuestion: false,
+        correctResponse: false,
       });
     }
     return accumulator;
@@ -203,7 +250,7 @@ function checkQuestionRule(question: IQuestion, answer: IAnswer) {
     question.required &&
     (!answer.textResponse ||
       !answer.optionId ||
-      answer.optionIds?.length === 0 ||
+      answer.selectedOptions?.length === 0 ||
       !answer.disabledResponse)
   ) {
     rule.showBox = true;
@@ -265,4 +312,5 @@ export {
   buildNewQuestion,
   updateStartPageInstruction,
   formatTime,
+  formatFormQuestions,
 };

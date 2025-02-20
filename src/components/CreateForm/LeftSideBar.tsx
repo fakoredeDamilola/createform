@@ -41,7 +41,6 @@ const LeftSideBar = ({ form, formId }: IProps) => {
     const questionIndex = questions.findIndex(
       (question) => question._id === questionId
     );
-    console.log({ questionIndex });
     if (questionIndex !== -1) {
       questions.splice(questionIndex, 1);
       const newQuestions: IQuestion[] = renumberQuestions(questions);

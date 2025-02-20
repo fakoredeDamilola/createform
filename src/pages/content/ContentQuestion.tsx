@@ -11,7 +11,9 @@ import { IAnswer } from "../../interfaces/IAnswer";
 import useDebounce from "../../hooks/useDebounce";
 import { useDispatch } from "react-redux";
 import {
+  returnOptionBackToQuestion,
   selectAnswerOption,
+  setOptionToFillGap,
   setStartResponding,
   updateAnswerResponse,
 } from "../../store/slices/content.slice";
@@ -23,6 +25,8 @@ import { RootState } from "../../store/store";
 import theme from "../../styles/theme";
 import ContentTimer from "../../components/content/ContentTimer";
 import { IQuestionAnswer } from "../../interfaces/IQuestionAnswer";
+import QuestionText from "../../components/content/QuestionText";
+import { ContentActionTab } from "./styles";
 
 const ContentQuestion = ({
   question,
@@ -48,6 +52,10 @@ const ContentQuestion = ({
   const { form, formViewingMode } = useSelector(
     (state: RootState) => state.content
   );
+
+  const selectOptionToFillGap = (option: IOption) => {
+    dispatch(setOptionToFillGap({ optionId: option.optionId }));
+  };
 
   const { mutate } = useMutation({
     mutationFn: updateFormInsightApi,
@@ -75,6 +83,10 @@ const ContentQuestion = ({
     updateFormInsight();
   };
 
+  const returnAnswerBackToOption = (option: IOption) => {
+    dispatch(returnOptionBackToQuestion({ option }));
+  };
+
   const updateFormInsight = () => {
     if (form._id) {
       mutate({ formID: form._id, formInsight: { starts: 1 } });
@@ -88,7 +100,6 @@ const ContentQuestion = ({
       answer.textResponse?.toLowerCase()
       ? true
       : false;
-  console.log({ formViewingMode });
 
   return (
     <Box>
@@ -120,10 +131,13 @@ const ContentQuestion = ({
           style={{ fontSize: isMobile ? "14px" : "20px", marginTop: "10px" }}
         />
         <Box width="100%">
-          <Typography fontSize={isMobile ? "20px" : "24px"}>
-            {question.questionText}
-            {question.required && "*"}
-          </Typography>
+          <QuestionText
+            question={question}
+            answer={answer}
+            returnAnswerBackToOption={returnAnswerBackToOption}
+            formViewingMode={formViewingMode}
+            answerResults={correctAnswer?.answerResults}
+          />
           {(question.questionType === QuestionType.short_text ||
             question.questionType === QuestionType.long_text) && (
             <Box width="100%" mt="40px">
@@ -159,11 +173,6 @@ const ContentQuestion = ({
                     ? true
                     : false;
 
-                console.log({
-                  selectedOption,
-                  correctOption,
-                  answer,
-                });
                 return (
                   <Box mt="20px" key={option.optionId}>
                     <QuestionOption
@@ -200,6 +209,24 @@ const ContentQuestion = ({
                 );
               })}
             </Box>
+          )}
+          {question.questionType === QuestionType.fill_the_gap && (
+            <Stack flexDirection="row" gap="15px" my="20px">
+              {question.options?.map((option) => {
+                return (
+                  <ContentActionTab
+                    key={option.optionId}
+                    onClick={() => {
+                      selectOptionToFillGap(option);
+                    }}
+                  >
+                    <Typography fontSize={isMobile ? "16px" : "20px"}>
+                      {option.optionText}
+                    </Typography>
+                  </ContentActionTab>
+                );
+              })}
+            </Stack>
           )}
           <Box mt="20px">{children}</Box>
         </Box>

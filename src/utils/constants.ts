@@ -10,12 +10,12 @@ const headerLinks = [
     route: routes.contact,
   },
   {
-    title: "Home",
-    route: routes.home,
+    title: "Solutions",
+    route: routes.solution,
   },
   {
-    title: "Home",
-    route: routes.home,
+    title: "Pricing",
+    route: routes.pricing,
   },
 ];
 
@@ -45,11 +45,12 @@ enum QuestionType {
   short_text = "Short Text",
   long_text = "Long Text",
   multiple_choice = "Multiple Choice",
-  multiple_selection = "Multiple Selection",
-  statement = "Statement",
-  email = "Email",
-  number = "Number",
+  // multiple_selection = "Multiple Selection",
+  // statement = "Statement",
+  // email = "Email",
+  // number = "Number",
   boolean = "Boolean",
+  fill_the_gap = "Fill The Gap",
 }
 
 enum FormItemType {
@@ -85,6 +86,8 @@ enum EncryptionType {
   EMAIL = "Email",
 }
 
+const fillTheGapId = "thisisagapcreatedbetweenquestionsandisunique";
+
 export {
   headerLinks,
   DashboardTabs,
@@ -99,4 +102,5 @@ export {
   ResponseType,
   FormItemType,
   FormStaticType,
+  fillTheGapId,
 };

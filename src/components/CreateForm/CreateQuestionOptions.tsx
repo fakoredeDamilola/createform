@@ -78,7 +78,6 @@ const CreateQuestionOptions = ({
       "correctAnswer" in selectedQuestion
     ) {
       if (selectedQuestion.correctAnswer?.answerResults) {
-        console.log(selectedQuestion.correctAnswer?.answerResults);
         setSelectedOptionId(selectedQuestion.correctAnswer?.answerResults);
       } else {
         setSelectedOptionId([]);
@@ -87,7 +86,6 @@ const CreateQuestionOptions = ({
   };
 
   useEffect(() => {
-    console.log({ selectedQuestion });
     selectNewOption();
   }, [selectedQuestion]);
 

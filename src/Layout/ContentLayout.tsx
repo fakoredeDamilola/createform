@@ -18,7 +18,6 @@ import { routes } from "../utils/routes";
 import { getResponseArrayFromForm } from "../utils/functions";
 import { IAnswer } from "../interfaces/IAnswer";
 import { IForm } from "../interfaces/IForm";
-import { ResponseType } from "../utils/constants";
 import { localStorageService } from "../factory/classes/LocalStorage";
 import axiosClient from "../axiosMethod";
 
@@ -35,8 +34,6 @@ const ContentLayout = ({ children }: { children: React.ReactNode }) => {
     refetchOnWindowFocus: false,
   });
 
-  console.log({ data, isLoading, error });
-
   const { mutate } = useMutation({
     mutationFn: updateFormInsightApi,
   });
@@ -45,15 +42,11 @@ const ContentLayout = ({ children }: { children: React.ReactNode }) => {
     mutationFn: createResponseApi,
     onSuccess: (data) => {
       const response = data.data.response;
-      console.log({ response });
       dispatch(updateResponseDetails({ response }));
       localStorageService.create("responseData", {
         responseId: response._id,
         completed: false,
       });
-    },
-    onError: (error) => {
-      // console.error("Error creating item:", error);
     },
   });
 
@@ -88,7 +81,6 @@ const ContentLayout = ({ children }: { children: React.ReactNode }) => {
         formSlug: form.slug,
         timeStarted,
         encryptionArray: form.encryptionDetails,
-        responseType: ResponseType.CREATE,
       });
     }
   };
@@ -100,9 +92,7 @@ const ContentLayout = ({ children }: { children: React.ReactNode }) => {
     );
     const timeStarted = new Date().getTime();
     createNewResponses(createAnswerResponses, data?.data, timeStarted);
-    dispatch(
-      getFormDetails({ form: data?.data, answers: createAnswerResponses })
-    );
+    dispatch(getFormDetails({ form: data?.data }));
     dispatch(setTimeStarted({ timeStarted }));
   };
 

@@ -173,10 +173,10 @@ const Signup = () => {
           width={isMobile ? "92%" : "50%"}
           margin="auto"
           height={isMobile ? "85vh" : "auto"}
-          padding={isMobile ? "0 20px" : "0 150px"}
+          padding={isMobile ? "0px 20px" : "0 150px"}
           boxSizing="border-box"
           borderRadius={isMobile ? "8px" : "0"}
-          bgcolor={isMobile ? colors.secondaryColor : colors.white}
+          bgcolor={isMobile ? colors.secondaryColor : colors.secondaryColor}
         >
           <Typography
             mb="30px"
@@ -300,6 +300,7 @@ const Signup = () => {
                   height: "45px",
                   borderRadius: "12px",
                   fontSize: "16px",
+                  marginTop: "10px",
                 }}
                 disabled={emailSignup.isSubmitting}
               >

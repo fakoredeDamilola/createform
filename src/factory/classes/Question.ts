@@ -10,7 +10,7 @@ export class QuestionSkeleton {
   characterLimit: boolean;
   timeLimit: boolean;
   totalTime: number;
-  questionText: string;
+  questionText: string[];
   disabled: boolean;
   correctAnswer: IQuestionAnswer;
   formItemType: FormItemType;
@@ -24,7 +24,7 @@ export class QuestionSkeleton {
     this.characterLimit = false;
     this.timeLimit = false;
     this.totalTime = 0;
-    this.questionText = "";
+    this.questionText = [""];
     this.questionDescription = "";
     this.disabled = false;
     this.correctAnswer = {} as IQuestionAnswer;

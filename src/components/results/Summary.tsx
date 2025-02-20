@@ -51,7 +51,7 @@ const Summary = ({
                 </Stack>
                 <Box width="70%">
                   <Typography color={colors.black}>
-                    {question.questionText}
+                    {question.questionText[0]}
                   </Typography>
                   <Typography fontSize="12px" mt="10px">
                     {totalResponse.length} out of {answers.length} people

@@ -26,7 +26,6 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     if (isError) {
-      console.log({ error });
       if ((error as AxiosError)?.status === 401) {
         navigate(routes.home);
       }

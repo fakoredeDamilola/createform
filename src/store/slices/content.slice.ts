@@ -3,6 +3,7 @@ import { IForm } from "../../interfaces/IForm";
 import { IAnswer } from "../../interfaces/IAnswer";
 import { IResponseDetail } from "../../interfaces/IResponseDetail";
 import { FormItemType, FormStaticType } from "../../utils/constants";
+import { IOption } from "../../interfaces/IOption";
 
 interface ContentState {
   form: IForm;
@@ -34,14 +35,11 @@ const contentSlice = createSlice({
   name: "content",
   initialState,
   reducers: {
-    getFormDetails: (
-      state,
-      action: PayloadAction<{ form: IForm; answers: IAnswer[] }>
-    ) => {
-      const { form, answers } = action.payload;
+    getFormDetails: (state, action: PayloadAction<{ form: IForm }>) => {
+      const { form } = action.payload;
       state.form = form;
       state.formViewingMode = false;
-      state.answers = answers;
+
       state.numberIndex = 0;
       if (form.formSettings.popQuiz) {
         state.disableNextButton = true;
@@ -75,7 +73,9 @@ const contentSlice = createSlice({
       state,
       action: PayloadAction<{ response: IResponseDetail }>
     ) => {
-      state.response = action.payload.response;
+      const response = action.payload.response;
+      state.response = response;
+      state.answers = response.answers;
     },
     moveToNextOrPrevQuestion: (state, action: PayloadAction<number>) => {
       state.numberIndex = action.payload;
@@ -136,11 +136,64 @@ const contentSlice = createSlice({
     ) => {
       const { optionId } = action.payload;
       const index = state.numberIndex;
-      state.answers = state.answers.map((answer, i) =>
-        i === index ? { ...answer, optionId, answeredQuestion: true } : answer
-      );
+      // state.answers = state.answers.map((answer, i) =>
+      //   i === index ? { ...answer, optionId, answeredQuestion: true } : answer
+      // );
+      state.answers[index] = {
+        ...state.answers[index],
+        optionId,
+        answeredQuestion: true,
+      };
       if (state.form.formSettings.popQuiz) {
         state.disableNextButton = false;
+      }
+    },
+    setOptionToFillGap: (
+      state,
+      action: PayloadAction<{
+        optionId: string;
+      }>
+    ) => {
+      const { optionId } = action.payload;
+      const index = state.numberIndex;
+      const question = state.form.questions[index];
+      const options = question.options;
+
+      const optionIndex = options?.findIndex(
+        (opt) => opt.optionId === optionId
+      );
+      const selectedOptions = state.answers[index].selectedOptions;
+      if (
+        optionIndex !== undefined &&
+        optionIndex !== -1 &&
+        options &&
+        selectedOptions
+      ) {
+        const noOfDashes = question.questionText.filter(
+          (txt) => txt === ""
+        ).length;
+        if (selectedOptions.length < noOfDashes) {
+          const option = options?.splice(optionIndex, 1)[0];
+          selectedOptions?.push(option);
+        }
+      }
+    },
+    returnOptionBackToQuestion: (
+      state,
+      action: PayloadAction<{
+        option: IOption;
+      }>
+    ) => {
+      const { option } = action.payload;
+      const index = state.numberIndex;
+      const options = state.form.questions[index].options;
+
+      const optionIndex = state.answers[index].selectedOptions?.findIndex(
+        (opt) => opt.optionId === option.optionId
+      );
+      if (optionIndex !== undefined && optionIndex !== -1 && options) {
+        options.push(option);
+        state.answers[index].selectedOptions?.splice(optionIndex, 1);
       }
     },
     updateAnswersArray: (
@@ -172,5 +225,7 @@ export const {
   setFormViewingMode,
   updateResponseDetails,
   changeCurrentContentPage,
+  setOptionToFillGap,
+  returnOptionBackToQuestion,
 } = contentSlice.actions;
 export default contentSlice.reducer;

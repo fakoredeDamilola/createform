@@ -7,4 +7,6 @@ export interface IFormSetting {
   popQuiz: boolean;
   addTimeLimitToForm: boolean;
   encryption?: boolean;
+  showStartPage: boolean;
+  markResponseAfterSubmission: boolean;
 }

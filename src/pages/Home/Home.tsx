@@ -10,6 +10,7 @@ import {
 import arrow from "../../assets/arrow.svg";
 import arrowTwo from "../../assets/arrowTwo.svg";
 import arrowThree from "../../assets/arrowThree.svg";
+import brand from "../../assets/brand.png";
 import { PlayCircle } from "@mui/icons-material";
 import theme from "../../styles/theme";
 import TrustedBy from "../../components/Home/TrustedBy";
@@ -47,7 +48,7 @@ const Home = () => {
                   textAlign: isMobile ? "center" : "left",
                 }}
               >
-                Use AI to convert customers’ testimonies into new sales
+                Use AI to Turn Responses into Engaging Quizzes & Forms
               </Typography>
               <Typography
                 sx={{
@@ -58,10 +59,10 @@ const Home = () => {
                   marginTop: "20px",
                 }}
               >
-                Text and video testimonials from your customers are scattered
-                all over the internet. Collect and incorporate them into your
-                sales funnel fast and easy. No need for website hosting. No need
-                for advanced tools.
+                Customer feedback and insights are scattered across various
+                platforms. Effortlessly collect, transform, and integrate them
+                into interactive quizzes, surveys, and forms. No coding
+                required. No complex tools needed.
               </Typography>
             </Box>
             <Stack
@@ -73,8 +74,12 @@ const Home = () => {
             >
               <StartButtonStyle mobile={isMobile}>Get Started</StartButtonStyle>
               <ScheduleButtonStyle mobile={isMobile}>
-                <PlayCircle sx={{ fontSize: "30px" }} />
-                <span style={{ marginTop: "3px" }}>Schedule a Demo</span>
+                <PlayCircle
+                  sx={{ fontSize: "30px", marginTop: isMobile ? "2px" : "0px" }}
+                />
+                <span style={{ marginTop: isMobile ? "8px" : "3px" }}>
+                  Schedule a Demo
+                </span>
               </ScheduleButtonStyle>
               <Box
                 sx={{
@@ -99,27 +104,12 @@ const Home = () => {
               display: isMobile ? "none" : "block",
             }}
           >
-            <img
-              src="https://custimony.ai/_next/image?url=%2F_next%2Fstatic%2Fmedia%2Fhero.40d1c4da.png&w=3840&q=75"
-              style={{ width: "100%" }}
-            />
+            <img src={brand} style={{ width: "70%", marginTop: "40px" }} />
             <Box sx={{ position: "absolute", top: "100px", left: "50px" }}>
               <img src={arrow} width="100px" />
             </Box>
             <Box sx={{ position: "absolute", bottom: "100px", right: "20px" }}>
               <img src={arrowTwo} width="50px" />
-            </Box>
-            <Box sx={{ position: "absolute", top: "30%", left: "-20%" }}>
-              <img
-                src="https://custimony.ai/_next/image?url=%2F_next%2Fstatic%2Fmedia%2FtestimonyBoxOne.34508964.png&w=3840&q=75"
-                width="190px"
-              />
-            </Box>
-            <Box sx={{ position: "absolute", top: "10%", right: "-20%" }}>
-              <img
-                src="https://custimony.ai/_next/image?url=%2F_next%2Fstatic%2Fmedia%2FtestimonyBoxTwo.cb1e4d32.png&w=3840&q=75"
-                width="190px"
-              />
             </Box>
           </Box>
         </HomeStackStyles>

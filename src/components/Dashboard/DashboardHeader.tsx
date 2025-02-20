@@ -37,14 +37,6 @@ const DashboardHeader = () => {
   const { mutate } = useMutation({
     mutationFn: (newForm: IForm & { publish: boolean }) =>
       updateFormSettingDetails(newForm),
-    onSuccess: (data) => {
-      alert("success");
-      // console.log("Item created successfully:", data);
-    },
-    onError: (error) => {
-      alert("error");
-      // console.error("Error creating item:", error);
-    },
   });
 
   useEffect(() => {
@@ -58,7 +50,9 @@ const DashboardHeader = () => {
   }, [form?.formName]);
 
   useEffect(() => {
-    dispatch(setSelectedDashboardTab({ selectedTab: 1 }));
+    if (pathname.includes("/form/result")) {
+      dispatch(setSelectedDashboardTab({ selectedTab: 1 }));
+    }
   }, [pathname, dispatch]);
 
   const openPublishModal = () => {

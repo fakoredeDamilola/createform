@@ -113,7 +113,11 @@ const ResponseTable = ({
                     fontSize="25px"
                   />
                   <Typography fontSize="12px" mt="3px">
-                    {question.questionText}
+                    {question.questionType !== QuestionType.fill_the_gap
+                      ? question.questionText[0]
+                      : question.questionText
+                          .map((que) => (que === "" ? "__" : que))
+                          .join(" ")}
                   </Typography>
                 </Stack>
                 <TableDropdown />
@@ -243,11 +247,24 @@ const ResponseTable = ({
                     sx={{ borderRight: "1px solid rgba(0, 0, 0, 0.12)" }}
                   >
                     {answer.questionType === QuestionType.long_text ||
-                    answer.questionType === QuestionType.short_text
-                      ? answer.textResponse
-                      : answer.questionType === QuestionType.multiple_choice
-                      ? optionText
-                      : null}
+                    answer.questionType === QuestionType.short_text ? (
+                      answer.textResponse
+                    ) : answer.questionType === QuestionType.multiple_choice ? (
+                      optionText
+                    ) : answer.questionType === QuestionType.fill_the_gap ? (
+                      <Stack flexDirection="row" gap="5px">
+                        {answer.selectedOptions?.map((selected) => (
+                          <Stack
+                            border={`1px solid ${colors.borderTwoText}`}
+                            padding="3px"
+                            borderRadius="5px"
+                            width="fit-content"
+                          >
+                            {selected.optionText}
+                          </Stack>
+                        ))}
+                      </Stack>
+                    ) : null}
                   </TableCell>
                 );
               })}
