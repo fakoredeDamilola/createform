@@ -79,6 +79,7 @@ const ContentQuestion = ({
   }, [debouncedResponse, dispatch]);
 
   const updateSelectedOptionValue = (value: string, optionId: string) => {
+    console.log({ value });
     dispatch(selectAnswerOption({ optionId }));
     updateFormInsight();
   };

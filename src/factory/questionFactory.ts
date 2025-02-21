@@ -3,7 +3,6 @@ import { BooleanChoice } from "./classes/BooleanChoice";
 import FillTheGap from "./classes/FillTheGap";
 import LongText from "./classes/LongText";
 import MultipleChoice from "./classes/MultipleChoice";
-import MultipleSelection from "./classes/MultipleSelection";
 import ShortText from "./classes/ShortText";
 
 export class QuestionFactory {
@@ -43,15 +42,7 @@ export class QuestionFactory {
           questionNumber,
           []
         );
-      case QuestionType.multiple_selection:
-        return new MultipleSelection(
-          formId,
-          questionType,
-          questionId,
-          questionFormat,
-          questionNumber,
-          []
-        );
+
       case QuestionType.boolean:
         return new BooleanChoice(
           formId,

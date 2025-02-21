@@ -1,4 +1,3 @@
-import React from "react";
 import { IAnswer } from "../../interfaces/IAnswer";
 import { Box, Stack, Typography } from "@mui/material";
 import { QuestionType } from "../../utils/constants";
