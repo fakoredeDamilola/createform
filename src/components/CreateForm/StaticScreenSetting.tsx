@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { IStaticPage } from "../../interfaces/IStaticPage";
 import { Box, Button, Stack } from "@mui/material";
 import { IFormSetting } from "../../interfaces/IFormSetting";

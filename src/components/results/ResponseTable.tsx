@@ -42,7 +42,7 @@ const ResponseTable = ({
 }) => {
   const [showOpen, setShowOpen] = useState(-1);
 
-  const handleClick = (event: React.MouseEvent<unknown>, id: string) => {
+  const handleClick = (id: string) => {
     const selectedIndex = selected.indexOf(id);
     let newSelected: readonly string[] = [];
 
@@ -162,7 +162,7 @@ const ResponseTable = ({
           return (
             <TableRow
               hover
-              onClick={(event) => handleClick(event, response._id)}
+              onClick={() => handleClick(response._id)}
               role="checkbox"
               aria-checked={isItemSelected}
               tabIndex={-1}

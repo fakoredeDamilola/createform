@@ -67,8 +67,7 @@ const WorkSpaceUISetting = ({
     setAnchorEl(event.currentTarget);
   };
 
-  const handleClose = (index: number) => {
-    dropDownItems.find((item, id) => id === index);
+  const handleClose = () => {
     setAnchorEl(null);
   };
 
@@ -143,7 +142,7 @@ const WorkSpaceUISetting = ({
                   key={index}
                   onClick={() => {
                     setSelectedDropdown(item);
-                    handleClose(index);
+                    handleClose();
                   }}
                   disableRipple
                 >

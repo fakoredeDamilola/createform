@@ -1,4 +1,3 @@
-import React from "react";
 import { IQuestionAnswer } from "../../interfaces/IQuestionAnswer";
 import { Box, Button, Stack, Typography } from "@mui/material";
 import { colors } from "../../styles/colors";

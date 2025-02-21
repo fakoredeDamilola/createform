@@ -61,6 +61,7 @@ const FormSettingModal: React.FC<FormSettingModalProps> = ({
     event: React.MouseEvent<HTMLDivElement, MouseEvent>,
     index: number
   ) => {
+    console.log(event);
     setSelectedIndex(index);
   };
 

@@ -1,5 +1,4 @@
 import { Box, Stack, Typography, useMediaQuery } from "@mui/material";
-import React from "react";
 import { colors } from "../../styles/colors";
 import theme from "../../styles/theme";
 

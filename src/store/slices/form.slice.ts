@@ -143,7 +143,7 @@ const formSlice = createSlice({
         questionId: string;
         key: string;
         value: string | boolean;
-        dashPositions: { start: number; stop: number }[];
+        dashPositions?: { start: number; stop: number }[];
       }>
     ) => {
       const { questionId, key, value, dashPositions } = action.payload;
@@ -156,7 +156,7 @@ const formSlice = createSlice({
         if (key === "questionText" && typeof value === "string") {
           (findQuestion as unknown as Record<string, string[] | boolean>)[key] =
             [value];
-          if (dashPositions.length > 0) {
+          if (dashPositions && dashPositions?.length > 0) {
             findQuestion.dashPositions = dashPositions;
           }
         } else {
