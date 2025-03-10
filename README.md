@@ -1,56 +1,61 @@
+### **📌 createform Frontend**
 
-
-### **📌 createform Frontend**  
-
-This is the **frontend** for a **dynamic form builder** that allows users to create and manage forms with various question types, including:  
+This is the **frontend** for a **dynamic form builder** that allows users to create and manage forms with various question types, including:
 
 ✅ Short Text  
 ✅ Long Text  
 ✅ Fill in the Gap  
 ✅ Number  
 ✅ Multiple Choice
-✅ Boolean question  
+✅ Boolean question
 
-**Upcoming Features:**  
-- 🖼️ Image uploads  
-- 🎵 Audio & Video support  
-- 📄 PDF submission  
-- 🔘 More question types  
+**Upcoming Features:**
 
-## **🚀 Tech Stack**  
+- 🖼️ Image uploads
+- 🎵 Audio & Video support
+- 📄 PDF submission
+- 🔘 More question types
 
-- **React** – Component-based UI  
-- **Material-UI** – UI components  
-- **Styled Components** – Custom styling  
-- **Redux Toolkit** – State management  
+## **🚀 Tech Stack**
 
-## **💻 Getting Started**  
+- **React** – Component-based UI
+- **Material-UI** – UI components
+- **Styled Components** – Custom styling
+- **Redux Toolkit** – State management
 
-### **1️⃣ Clone the Repository**  
+## **💻 Getting Started**
+
+### **1️⃣ Clone the Repository**
+
 ```sh
 git clone [createform](https://github.com/fakoredeDamilola/createform)
 cd createform
 ```
 
-### **2️⃣ Install Dependencies**  
+### **2️⃣ Install Dependencies**
+
 ```sh
 npm install
 ```
 
-### **3️⃣ Start Development Server**  
+### **3️⃣ Start Development Server**
+
 ```sh
 npm run dev
 ```
 
-## **⚙️ Environment Variables**  
-Create a **.env** file in the root directory and configure:  
+## **⚙️ Environment Variables**
+
+Create a **.env** file in the root directory and configure:
+
 ```sh
 VITE_GOOGLE_CLIENT_ID=
 VITE_GOOGLE_CLIENT_SECRET=
-VITE_API_BASE_URL="http://localhost:3333"
+VITE_API_BASE_URL="https://createform-backend.onrender.com/"
 ```
 
-## **📦 Project Structure**  
+## **📦 Project Structure**
+
 ```
 📂 src
  ┣ 📂 components    # Reusable UI components
@@ -62,18 +67,21 @@ VITE_API_BASE_URL="http://localhost:3333"
  ┗ index.tsx       # Entry point
 ```
 
-## **🔗 API Connection**  
-The frontend interacts with the **NestJS + MongoDB backend** to handle form creation, updates, and submissions.  
+## **🔗 API Connection**
 
-## **🎨 UI Customization**  
-The project uses **Material-UI** for prebuilt components and **Styled Components** for custom styling. You can easily modify themes in `styles/theme.ts`.  
+The frontend interacts with the **NestJS + MongoDB backend** to handle form creation, updates, and submissions.
 
-## **🤝 Contributing**  
-1. Fork the repo  
-2. Create a new branch (`git checkout -b feature/new-feature`)  
-3. Commit changes (`git commit -m "Added new feature"`)  
-4. Push (`git push origin feature/new-feature`)  
-5. Open a Pull Request  
+## **🎨 UI Customization**
+
+The project uses **Material-UI** for prebuilt components and **Styled Components** for custom styling. You can easily modify themes in `styles/theme.ts`.
+
+## **🤝 Contributing**
+
+1. Fork the repo
+2. Create a new branch (`git checkout -b feature/new-feature`)
+3. Commit changes (`git commit -m "Added new feature"`)
+4. Push (`git push origin feature/new-feature`)
+5. Open a Pull Request
 
 ---
 
