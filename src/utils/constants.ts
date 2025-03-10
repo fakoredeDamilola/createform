@@ -6,8 +6,8 @@ const headerLinks = [
     route: routes.home,
   },
   {
-    title: "Contact",
-    route: routes.contact,
+    title: "Dashboard",
+    route: routes.dashboard,
   },
   {
     title: "Solutions",

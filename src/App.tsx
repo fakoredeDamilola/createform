@@ -19,9 +19,8 @@ function App() {
               element={<route.component />}
             />
           ))}
-        </Routes>
-        <AuthLayout>
-          <Routes>
+
+          <Route element={<AuthLayout />}>
             {authenticatedRoutes.map((route, index) => (
               <Route
                 key={index}
@@ -29,8 +28,8 @@ function App() {
                 element={<route.component />}
               />
             ))}
-          </Routes>
-        </AuthLayout>
+          </Route>
+        </Routes>
       </Suspense>
     </Router>
   );

@@ -1,10 +1,10 @@
 import { Box } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { routes } from "../utils/routes";
-import { useNavigate } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import showToast from "../CustomToast";
 
-const AuthLayout = ({ children }: { children: React.ReactNode }) => {
+const AuthLayout = () => {
   const [authToken, setAuthToken] = useState("");
   const navigate = useNavigate();
 
@@ -23,9 +23,14 @@ const AuthLayout = ({ children }: { children: React.ReactNode }) => {
   }, []);
 
   if (authToken) {
-    return <Box>{children}</Box>;
+    return (
+      <Box>
+        {" "}
+        <Outlet />{" "}
+      </Box>
+    );
   } else {
-    <Box>You are not authenticated </Box>;
+    return <Box>You are not authenticated </Box>;
   }
 };
 
