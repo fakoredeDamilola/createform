@@ -1,5 +1,5 @@
 import { Box } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { routes } from "../utils/routes";
 import { Outlet, useNavigate } from "react-router-dom";
 import showToast from "../CustomToast";
