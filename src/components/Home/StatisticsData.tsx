@@ -27,7 +27,7 @@ const StatisticsData = () => {
           textAlign="center"
           color={colors.black}
         >
-          Why Typeform?
+          Why Createform?
         </Typography>
         <Typography
           fontSize={isMobile ? "16px" : "18px"}

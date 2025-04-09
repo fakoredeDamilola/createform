@@ -1,4 +1,4 @@
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, useMediaQuery } from "@mui/material";
 import { colors } from "../../styles/colors";
 import ConfettiBackground from "./ConfettiBackground";
 import Spinner from "../Spinner";
@@ -6,6 +6,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../store/store";
 import { useNavigate } from "react-router-dom";
 import { getRoute } from "../../utils/routes";
+import theme from "../../styles/theme";
 
 type StatusType = "success" | "error" | "idle" | "pending";
 
@@ -17,6 +18,7 @@ const LastContentPage = ({
   id: string;
 }) => {
   const { form } = useSelector((state: RootState) => state.content);
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
   const navigate = useNavigate();
 
@@ -36,7 +38,11 @@ const LastContentPage = ({
         >
           {status === "success" ? (
             <>
-              <Typography variant="h2" color={colors.mistBlue}>
+              <Typography
+                textAlign="center"
+                variant={isMobile ? "h4" : "h2"}
+                color={colors.mistBlue}
+              >
                 Congratulations, Response has been submitted
               </Typography>
               {form.formSettings.addAnswerToQuestion && (

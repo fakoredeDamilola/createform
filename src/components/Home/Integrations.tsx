@@ -10,6 +10,7 @@ const Integrations = () => {
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   return (
     <Stack
+      id="integrations"
       flexDirection={isMobile ? "column" : "row"}
       alignItems="center"
       width="100%"

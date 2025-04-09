@@ -10,7 +10,8 @@ export const routes = {
   signup: "/signup",
   resultPage: "/result/:responseId",
   solution: "solution",
-  pricing: "pricing",
+  features: "features",
+  integrations: "integrations",
 };
 
 export const getRoute = (

@@ -38,6 +38,7 @@ import AnswerBox from "../../components/content/AnswerBox";
 import { FormItemType } from "../../utils/constants";
 import { localStorageService } from "../../factory/classes/LocalStorage";
 import ContentStaticPage from "../../components/content/staticPages/ContentStaticPage";
+import Spinner from "../../components/Spinner";
 
 const Content = () => {
   const dispatch = useDispatch();
@@ -241,7 +242,7 @@ const Content = () => {
                 height="100%"
                 margin="0 auto"
               >
-                {questions && (
+                {questions?.length > 0 && answers?.length > 0 ? (
                   <CSSTransition
                     in={!isExiting}
                     timeout={timeout}
@@ -310,6 +311,8 @@ const Content = () => {
                       </>
                     )}
                   </CSSTransition>
+                ) : (
+                  <Spinner />
                 )}
                 <ChangeQuestionButtons
                   popQuiz={form?.formSettings?.popQuiz}

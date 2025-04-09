@@ -30,6 +30,7 @@ const Features = () => {
   ];
   return (
     <Stack
+      id="features"
       flexDirection={isMobile ? "column" : "row"}
       justifyContent="space-between"
       gap="30px"

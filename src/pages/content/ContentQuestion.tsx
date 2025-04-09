@@ -102,6 +102,7 @@ const ContentQuestion = ({
       ? true
       : false;
 
+  console.log({ question, answer });
   return (
     <Box>
       <Stack direction="row" gap={isMobile ? "5px" : "20px"}>

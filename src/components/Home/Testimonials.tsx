@@ -35,7 +35,7 @@ const Testimonials = () => {
         </Typography>
         <Typography fontSize="18px" textAlign={isMobile ? "center" : "left"}>
           Chase Clark, Senior UX Researcher at Calm, explains why they switched
-          to Typeform.
+          to Createform.
         </Typography>
         <Button
           variant="contained"

@@ -5,17 +5,18 @@ const headerLinks = [
     title: "Home",
     route: routes.home,
   },
-  {
-    title: "Dashboard",
-    route: routes.dashboard,
-  },
+
   {
     title: "Solutions",
     route: routes.solution,
   },
   {
-    title: "Pricing",
-    route: routes.pricing,
+    title: "Features",
+    route: routes.features,
+  },
+  {
+    title: "Integration",
+    route: routes.integrations,
   },
 ];
 

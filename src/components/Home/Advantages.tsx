@@ -1,6 +1,6 @@
 import { Box, Button, Stack, Typography, useMediaQuery } from "@mui/material";
-import videoOne from "../../assets/section-1-video.webm";
-import videoTwo from "../../assets/section-2-video.webm";
+import imageOne from "../../assets/section-1.png";
+import imageTwo from "../../assets/section-2.jpg";
 import theme from "../../styles/theme";
 import { colors } from "../../styles/colors";
 
@@ -8,18 +8,18 @@ const Advantages = () => {
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const advantageText = [
     {
-      videoUrl: videoOne,
+      imageUrl: imageOne,
       headingText: "FORMS, SURVEYS, AND QUIZZES",
-      mainText: "Get up to 3.5x more data about them",
+      mainText: "Get up to 3.5x more insights on students and learners.",
       subText:
-        "When your forms break the norm, more people fill them out. Think branded designs, video content, and relevant follow-up questions.",
+        "Engaging quizzes and interactive formats lead to more participation and better understanding.",
     },
     {
-      videoUrl: videoTwo,
+      imageUrl: imageTwo,
       headingText: "CUSTOMER INTELLIGENCE",
-      mainText: "Use that data to guide your next move",
+      mainText: "Use that data to enhance learning and research.",
       subText:
-        "What led customers to you. Their opinions. How they decide what to buy. Data can tell you a lot and our AI analysis can help you make sense of it all.",
+        "Track student progress, understand learning patterns, and improve assessments with smart insights.",
     },
   ];
   return (
@@ -77,13 +77,7 @@ const Advantages = () => {
               </Box>
             </Stack>
             <Box width={isMobile ? "100%" : "50%"} my={isMobile ? "25px" : "0"}>
-              <video
-                src={advantage.videoUrl}
-                muted
-                loop
-                autoPlay
-                style={{ width: "100%" }}
-              />
+              <img src={advantage.imageUrl} style={{ width: "100%" }} />
             </Box>
             <Box display={isMobile ? "block" : "none"} textAlign="center">
               <Typography fontSize="14px" sx={{ color: colors.black }}>

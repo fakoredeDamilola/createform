@@ -9,7 +9,10 @@ const ProfilePicture = ({
   user: IUser;
   showDetails?: boolean;
 }) => {
-  const initials = `${user.firstName[0].toUpperCase()}${user.lastName[0].toUpperCase()}`;
+  console.log({ user });
+  const initials = `${
+    user?.firstName ? user?.firstName[0]?.toUpperCase() : ""
+  }`;
   return (
     <Stack direction="row" gap="10px" alignItems="center">
       {user?.profilePicture ? (

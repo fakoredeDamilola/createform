@@ -272,9 +272,7 @@ const ResponseTable = ({
               <TableCell
                 align="left"
                 sx={{ borderRight: "1px solid rgba(0, 0, 0, 0.12)" }}
-              >
-                Tag
-              </TableCell>
+              ></TableCell>
               <TableCell
                 align="left"
                 sx={{ borderRight: "1px solid rgba(0, 0, 0, 0.12)" }}

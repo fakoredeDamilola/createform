@@ -154,7 +154,7 @@ const Login = () => {
 
         <img src={signupImg} width="350px" />
         <Typography position="absolute" bottom="20px" color={colors.white}>
-          © Typeform
+          © Createform
         </Typography>
       </Stack>
       <Stack

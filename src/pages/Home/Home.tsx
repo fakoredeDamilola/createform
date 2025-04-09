@@ -22,6 +22,7 @@ import Advantages from "../../components/Home/Advantages";
 
 const Home = () => {
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+
   return (
     <Container>
       <Header />
@@ -48,7 +49,7 @@ const Home = () => {
                   textAlign: isMobile ? "center" : "left",
                 }}
               >
-                Use AI to Turn Responses into Engaging Quizzes & Forms
+                Create Engaging Pop Quizzes, MCQs and More
               </Typography>
               <Typography
                 sx={{
@@ -59,10 +60,11 @@ const Home = () => {
                   marginTop: "20px",
                 }}
               >
-                Customer feedback and insights are scattered across various
-                platforms. Effortlessly collect, transform, and integrate them
-                into interactive quizzes, surveys, and forms. No coding
-                required. No complex tools needed.
+                Design interactive quizzes, pop quizzes, and multiple-choice
+                questions (MCQs) effortlessly. Whether you're a student,
+                educator, or researcher, transform ideas into engaging
+                assessments with easy-to-use tools. No coding required. No
+                complex setup—just seamless quiz creation!
               </Typography>
             </Box>
             <Stack
@@ -118,29 +120,36 @@ const Home = () => {
         </Box>
 
         <Box width="95%" margin="auto">
-          <Typography
-            variant={isMobile ? "h4" : "h3"}
-            color={colors.black}
-            textAlign="center"
-            margin="70px auto"
-          >
-            Typeform helps you understand customers
-          </Typography>
+          <Box id="solution">
+            <Typography
+              variant={isMobile ? "h4" : "h3"}
+              color={colors.black}
+              textAlign="center"
+              margin="70px auto"
+            >
+              Createform helps students and educators create and analyze
+              quizzes.
+            </Typography>
 
-          <Advantages />
-          <Testimonials />
-          <Typography
-            variant={isMobile ? "h4" : "h3"}
-            textAlign="center"
-            width={isMobile ? "100%" : "60%"}
-            margin="40px auto"
-            sx={{ color: colors.black }}
-            my="80px"
-          >
-            With a superior form of data collection
-          </Typography>
+            <Advantages />
+            <Testimonials />
+          </Box>
 
-          <Features />
+          <Box>
+            <Typography
+              variant={isMobile ? "h4" : "h3"}
+              textAlign="center"
+              width={isMobile ? "100%" : "60%"}
+              margin="40px auto"
+              sx={{ color: colors.black }}
+              my="80px"
+            >
+              With a superior form of data collection
+            </Typography>
+
+            <Features />
+          </Box>
+
           <Box my="100px">
             <Integrations />
           </Box>
@@ -180,8 +189,8 @@ const Home = () => {
         borderTop={`1px solid ${colors.textButton}`}
         py="20px"
       >
-        <Typography color={colors.white}>With love, from Barcelona</Typography>
-        <Typography color={colors.white}>© Typeform</Typography>
+        <Typography color={colors.white}>With love, from Nigeria</Typography>
+        <Typography color={colors.white}>© Createform</Typography>
       </Stack>
     </Container>
   );

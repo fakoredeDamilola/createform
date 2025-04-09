@@ -28,6 +28,15 @@ const Header = () => {
     }
   };
 
+  const selectLink = (route: string) => {
+    console.log({ route });
+    setSelectedLink(route);
+    const element = document.getElementById(route);
+    element?.scrollIntoView({
+      behavior: "smooth",
+    });
+  };
+
   return (
     <Box
       sx={{
@@ -59,10 +68,10 @@ const Header = () => {
         {headerLinks.map((link) => (
           <HeaderLinkStyles
             mobile={isMobile}
-            to={`/${link.route}`}
+            to={link.route === "/home" ? `/${link.route}` : `#${link.route}`}
             key={link.route}
             selected={selectedLink === link.route}
-            onClick={() => setSelectedLink(link.route)}
+            onClick={() => selectLink(link.route)}
           >
             {link.title}
             <div />

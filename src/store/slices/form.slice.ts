@@ -34,7 +34,7 @@ const initialState: FormState = {
   forms: [],
   selectedQuestion: {} as IQuestion,
   openPublishModal: false,
-  formString: "https://0983993.typeform.com/g",
+  formString: `https://createform-neon.vercel.app/g`,
   form: {} as IForm,
   questionsWithAnswers: [],
   responses: [],
