@@ -34,7 +34,7 @@ const DashboardHeader = () => {
 
   const debouncedName = useDebounce(debouncedFormName, 500);
 
-  const { mutate } = useMutation({
+  const { mutate, data, isPending, mutateAsync } = useMutation({
     mutationFn: (newForm: IForm & { publish: boolean }) =>
       updateFormSettingDetails(newForm),
   });
@@ -55,12 +55,17 @@ const DashboardHeader = () => {
     }
   }, [pathname, dispatch]);
 
-  const openPublishModal = () => {
-    mutate({ ...form, publish: true });
-    dispatch(setOpenPublishModal(true));
+  console.log({data})
+
+  const openPublishModal = async () => {
+    await mutateAsync({ ...form, publish: true });
+    // if(!isPending){
+         dispatch(setOpenPublishModal(true));
+    // }
+ 
   };
 
-  const saveModal = () => {
+  const saveForm = () => {  
     mutate({ ...form, publish: false });
   };
 
@@ -133,9 +138,10 @@ const DashboardHeader = () => {
               <Button
                 variant="contained"
                 sx={{ marginRight: "10px", height: "35px" }}
-                onClick={saveModal}
+                onClick={saveForm}
+                disabled={isPending}
               >
-                Save
+                {isPending ? "Saving..." : "Save"}
               </Button>
               <Button
                 variant="contained"
@@ -144,6 +150,7 @@ const DashboardHeader = () => {
                   color: colors.white,
                   height: "35px",
                 }}
+                disabled={isPending}
                 onClick={openPublishModal}
               >
                 <TiLocationArrowOutline
@@ -153,7 +160,7 @@ const DashboardHeader = () => {
                     marginRight: "5px",
                   }}
                 />
-                Publish
+                {isPending ? "Publishing..." : "Publish"}
               </Button>
             </Stack>
           )}
