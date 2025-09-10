@@ -21,6 +21,11 @@ import {
 import { SlCalender } from "react-icons/sl";
 import { CgMenuGridR } from "react-icons/cg";
 import theme from "../../styles/theme";
+import { useDispatch } from "react-redux";
+import { DashboardViewEnum } from "../../utils/enums";
+import { updateDashboardView } from "../../store/slices/user.slice";
+import { useSelector } from "react-redux";
+import { RootState } from "../../store/store";
 
 const buttonStyle = {
   color: colors.textButton,
@@ -35,11 +40,11 @@ const buttonStyle = {
 
 const dashBoardViews = [
   {
-    name: "Grid",
+    name: DashboardViewEnum.GRID,
     icon: <WindowOutlined sx={{ fontSize: "18px" }} />,
   },
   {
-    name: "List",
+    name: DashboardViewEnum.LIST,
     icon: <FormatListBulleted sx={{ fontSize: "18px" }} />,
   },
 ];
@@ -57,11 +62,14 @@ const WorkSpaceUISetting = ({
     { icon: <BsSortAlphaDown />, text: "Alphabetical" },
   ];
 
+  const {dashboardView} = useSelector((state: RootState) => state.user);
+
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const [selectedDropdown, setSelectedDropdown] = useState(dropDownItems[0]);
-  const [selectedView, setSelectedView] = useState(dashBoardViews[0].name);
+  const [selectedView, setSelectedView] = useState(dashboardView);
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+  const dispatch = useDispatch();
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -179,6 +187,7 @@ const WorkSpaceUISetting = ({
                   }}
                   onClick={() => {
                     setSelectedView(value.name);
+                    dispatch(updateDashboardView({dashboardView: value.name}))
                   }}
                 >
                   {value.icon} {value.name}

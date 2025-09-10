@@ -1,16 +1,19 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { IUser } from "../../interfaces/IUser";
+import { DashboardViewEnum } from "../../utils/enums";
 
 interface UserState {
   user: IUser | null;
   isLoggedIn: boolean;
   selectedDashboardTab: number;
+  dashboardView: DashboardViewEnum;
 }
 
 const initialState: UserState = {
   user: null,
   isLoggedIn: false,
   selectedDashboardTab: 0,
+  dashboardView: DashboardViewEnum.LIST,
 };
 
 const userSlice = createSlice({
@@ -33,6 +36,9 @@ const userSlice = createSlice({
       state.user = null;
       state.isLoggedIn = false;
     },
+    updateDashboardView: (state, action: PayloadAction<{ dashboardView: DashboardViewEnum }>) => {
+      state.dashboardView = action.payload.dashboardView;
+    },
     updateUser: (state, action: PayloadAction<Partial<IUser>>) => {
       if (state.user) {
         state.user = { ...state.user, ...action.payload };
@@ -47,5 +53,6 @@ export const {
   updateUser,
   setUserInfo,
   setSelectedDashboardTab,
+  updateDashboardView,
 } = userSlice.actions;
 export default userSlice.reducer;

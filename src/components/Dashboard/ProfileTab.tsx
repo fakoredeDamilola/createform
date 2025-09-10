@@ -26,7 +26,7 @@ const ProfileTab = () => {
           gap="3px"
           alignItems="center"
           sx={{ cursor: "pointer" }}
-          onClick={handleClick}
+          // onClick={handleClick}
         >
           <LogoLineStyles />
 
@@ -36,7 +36,7 @@ const ProfileTab = () => {
             <ProfileImageStyle />
           )}
           <Typography fontSize="14px">{user.email.split("@")[0]}</Typography>
-          <KeyboardArrowDown />
+          {/* <KeyboardArrowDown /> */}
         </Stack>
         <Menu
           anchorEl={anchorEl}

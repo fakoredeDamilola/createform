@@ -1,8 +1,7 @@
 import { useState } from "react";
 import { Box, Button, Stack, Typography, useMediaQuery } from "@mui/material";
-import { Add, Close, Search } from "@mui/icons-material";
+import { Add, Close } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
-import DashboardOutlined from "@mui/icons-material/DashboardOutlined";
 import WorkSpaceUISetting from "../../components/Dashboard/WorkSpaceUISetting";
 import NoFormUI from "../../components/Dashboard/NoFormUI";
 import theme from "../../styles/theme";
@@ -15,6 +14,9 @@ import { createNewFormApi, getUserForms } from "../../api/dashboard.api";
 import FormTab from "../../components/Dashboard/FormTab";
 import { IForm } from "../../interfaces/IForm";
 import Spinner from "../../components/Spinner";
+import { useSelector } from "react-redux";
+import { RootState } from "../../store/store";
+import { DashboardViewEnum } from "../../utils/enums";
 
 const Dashboard = () => {
   const [openSideDashboard, setOpenSideDashboard] = useState(false);
@@ -36,6 +38,7 @@ const Dashboard = () => {
 
   const navigate = useNavigate();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+    const {dashboardView} = useSelector((state: RootState) => state.user);
 
   const openCreateForm = () => {
     mutate({ formName: "Create new Form" });
@@ -97,7 +100,7 @@ const Dashboard = () => {
               <Add /> Create a new form
             </Button>
           </Box>
-          <Box
+         {/*  <Box
             px="30px"
             py="16px"
             width="100%"
@@ -198,9 +201,9 @@ const Dashboard = () => {
                 / 10
               </Typography>
             </Stack>
-            {/* <Typography my="15px" fontSize="14px">
+            <Typography my="15px" fontSize="14px">
               Resets on Oct 29
-            </Typography> */}
+            </Typography> 
             <Button
               sx={{
                 padding: "3px 10px",
@@ -214,7 +217,7 @@ const Dashboard = () => {
             >
               Increase Response Limit
             </Button>
-          </Box>
+          </Box> */}
         </Box>
         <Box sx={{ flex: 1, p: isMobile ? "0" : "20px", overflowY: "auto" }}>
           <WorkSpaceUISetting
@@ -226,7 +229,7 @@ const Dashboard = () => {
             <>
               {data.data.forms.length > 0 ? (
                 <Box>
-                  <Stack
+                  {dashboardView === DashboardViewEnum.LIST && <Stack
                     my="10px"
                     padding="10px 0px"
                     width="100%"
@@ -246,15 +249,19 @@ const Dashboard = () => {
                         );
                       })}
                     </Stack>
-                  </Stack>
+                  </Stack>}
+                  <Box display="flex" flexDirection={ dashboardView === DashboardViewEnum.LIST ? "column":"row"} marginTop={dashboardView === DashboardViewEnum.LIST ? "0px":"20px"}  >
+
                   {data.data.forms.map((form: IForm, index: number) => (
                     <Box key={index} my="10px" mx="15px">
                       <FormTab
                         form={form}
                         getFormAndOpen={() => getFormAndOpen(form._id)}
+                        dashboardView={dashboardView}
                       />
                     </Box>
                   ))}
+                  </Box>
                 </Box>
               ) : (
                 <NoFormUI openCreateForm={openCreateForm} />

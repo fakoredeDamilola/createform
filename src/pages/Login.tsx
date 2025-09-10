@@ -87,11 +87,7 @@ const Login = () => {
       });
     },
   });
-
-  const loginWithEmail = (values: Partial<IEmailArgument>) => {
-    loginMutation.mutate(values);
-  };
-
+  
   const googleLogin = useGoogleLogin({
     onSuccess: (codeResponse) => {
       const { access_token } = codeResponse;
@@ -120,9 +116,12 @@ const Login = () => {
       password: "",
     },
     validationSchema: validationSchema,
-    onSubmit: (values, { setSubmitting }) => {
-      loginWithEmail(values);
-      setSubmitting(false);
+    onSubmit: async (values, { setSubmitting }) => {
+      try {
+        await loginMutation.mutateAsync(values); 
+      } finally {
+        setSubmitting(false); 
+      }
     },
   });
 

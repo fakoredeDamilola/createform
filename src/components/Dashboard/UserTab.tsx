@@ -60,7 +60,7 @@ const UserTab = () => {
           <Box>
             <ProfilePicture user={user} showDetails={true} />
           </Box>
-          <Divider sx={{ my: 1 }} />
+          {/* <Divider sx={{ my: 1 }} />
           <Box sx={{ px: 2, py: 1 }}>
             <Typography variant="subtitle2" color="textSecondary">
               Organization
@@ -85,7 +85,7 @@ const UserTab = () => {
           </MenuItem>
           <MenuItem sx={{ fontSize: "14px" }} onClick={handleClose}>
             Data
-          </MenuItem>
+          </MenuItem> */}
           <Divider sx={{ my: 1 }} />
           <MenuItem
             sx={{ fontSize: "14px", color: colors.danger }}
